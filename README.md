@@ -1,4 +1,18 @@
 ﻿# GROCERY STORE FRONTEND
- ## The Boolfly Grocery Store Demo is a modern mobile application designed to showcase the integration of Magento 2’s GraphQL API and Node.js microservices in an eCommerce environment. Developed as a training tool for internship students, this project focuses on demonstrating core concepts of mobile app development, API integration, and scalable architecture in the context of a real-world eCommerce solution.
-## The application offers a feature-rich, user-friendly experience, enabling users to browse products, search for items, add products to a shopping cart, and complete the checkout process. With a focus on performance and scalability, the application integrates Magento 2 for its robust backend eCommerce functionalities and leverages a Node.js-powered microservice to deliver fast and accurate product search capabilities.
-## This project is designed not only to meet functional requirements for an eCommerce platform but also to serve as a practical learning tool for interns. It incorporates modern technologies such as GraphQL, React.js, and Node.js, providing hands-on exposure to real-world development practices. The application’s modular and scalable architecture ensures future adaptability, making it an ideal foundation for further enhancements or business-specific implementations.
+ ## Description 
+The Boolfly Grocery Store Demo is a modern mobile application designed to showcase the integration of Magento 2’s GraphQL API and Node.js microservices in an eCommerce environment. Developed as a training tool for internship students, this project focuses on demonstrating core concepts of mobile app development, API integration, and scalable architecture in the context of a real-world eCommerce solution.
+ ## Setup Base Project
+Installing NodeJS 
+> https://nodejs.org/en
+Installing React Native Tooling
+> `npm install -g react-native-app`
+
+ ## Cloning this project
+`git clone https://github.com/quy1003/grocery_store_fe.git`
+`cd grocery_store_fe`
+`npm i`
+`npm start`
+Scan the QR code if using Expo Go or using the virtual machine offered by Android Studio
+
+
+ 
