@@ -7,7 +7,7 @@ const { height, width } = Dimensions.get('window');
 
 const Welcome = () => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, marginTop: 25 }}>
       <ImageBackground
         source={{
           uri: 'https://media.istockphoto.com/id/1718516554/photo/full-frame-of-assortment-of-healthy-and-fresh-fruits.webp?a=1&b=1&s=612x612&w=0&k=20&c=R5kRarCiJjLmzKIEv_8NEEscMdesZFWwYqxnDyJ7E2s=',
@@ -23,14 +23,14 @@ const Welcome = () => {
             <Text style={styles.text}>High quality</Text>
             <Text style={styles.text}>Fruits & vegetables</Text>
         </View>
-        <View style={{height:'20%'}}></View>
-        <View style={{flex:1, alignItems:'center'}}>
-        <Button style={{marginBottom:10, borderRadius:35, width:'90%', height:50}} size="lg" variant="solid" action="positive">
-          <ButtonText style={{paddingVertical:5}}>Log in</ButtonText>
-        </Button>
-        <Button style={{marginBottom:10, borderRadius:35, width:'90%', height:50}} size="lg" variant="solid" action="positive">
-          <ButtonText style={{paddingVertical:5}}>Sign up</ButtonText>
-        </Button>
+        <View style={{height:'18%'}}></View>
+        <View style={{flex:1, alignItems:'center', paddingHorizontal: 10}}>
+        <Button style={{marginBottom:40, borderRadius:35, backgroundColor:'#228B22', width:'100%'}} size="lg" variant="solid" action="positive">
+                        <ButtonText style={{paddingVertical:18,position:'relative', textAlign:'center', color:'white', fontWeight:'bold', fontSize:18}}>Log in</ButtonText>
+                      </Button>
+        <Button style={{marginBottom:40, borderRadius:35, backgroundColor:'#228B22', width:'100%'}} size="lg" variant="solid" action="positive">
+                        <ButtonText style={{paddingVertical:18,position:'relative', textAlign:'center', color:'white', fontWeight:'bold', fontSize:18}}>Sign in</ButtonText>
+                      </Button>
         </View>
 
       </ImageBackground>
@@ -40,12 +40,12 @@ const Welcome = () => {
 
 const styles = StyleSheet.create({
     textTitile:{
-        fontSize:32,
+        fontSize:36,
         marginBottom: 10
     },
   text: {
     color: 'whitesmoke',
-    fontSize: 26,
+    fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
     textAlign:'left' ,

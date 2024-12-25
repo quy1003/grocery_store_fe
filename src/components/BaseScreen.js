@@ -14,10 +14,6 @@ const BaseScreen = ({ children, title, subtitle }) => {
 
         <View style={styles.content}>
           {children}
-          {children}
-          {children}
-          {children}
-          {children}
         </View>
       </ScrollView>
     </View>
