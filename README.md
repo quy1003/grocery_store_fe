@@ -8,6 +8,9 @@ Installing NodeJS
 Installing React Native Tooling
 > `npm install -g react-native-app`
 
+> create-react-app <project-name>
+
+> Waiting for a couple of times ...   
  ## Cloning this project
 `git clone https://github.com/quy1003/grocery_store_fe.git`  
 `cd grocery_store_fe`  
