@@ -4,14 +4,15 @@ The Boolfly Grocery Store Demo is a modern mobile application designed to showca
  ## Setup Base Project
 Installing NodeJS 
 > https://nodejs.org/en
+  
 Installing React Native Tooling
 > `npm install -g react-native-app`
 
  ## Cloning this project
-`git clone https://github.com/quy1003/grocery_store_fe.git`
-`cd grocery_store_fe`
-`npm i`
-`npm start`
+`git clone https://github.com/quy1003/grocery_store_fe.git`  
+`cd grocery_store_fe`  
+`npm i`  
+`npm start`  
 Scan the QR code if using Expo Go or using the virtual machine offered by Android Studio
 
 
