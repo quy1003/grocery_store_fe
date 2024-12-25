@@ -5,12 +5,19 @@ import ProfileScreen from "./Screens/ProfileScreen";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FavoriteScreen from "./Screens/FavoriteScreen";
 import CartScreen from "./Screens/CartScreen";
+import { StyleSheet } from "react-native";
 const Tab = createBottomTabNavigator();
 
 export default function MyTabs() {
   return (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={{ lazy: true }}>
+      <Tab.Navigator
+        screenOptions={{
+          lazy: true,
+          tabBarStyle: { backgroundColor: "#efffe8" },
+          tabBarActiveTintColor: "#bfeca1",
+        }}
+      >
         <Tab.Screen
           name="Home"
           component={HomeScreen}
@@ -71,3 +78,9 @@ export default function MyTabs() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#efffe8",
+  },
+});

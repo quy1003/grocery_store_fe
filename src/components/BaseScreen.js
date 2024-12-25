@@ -24,7 +24,7 @@ export default BaseScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: "#f5f5f5",
   },
   contentContainer: {
@@ -49,8 +49,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 16,
-    borderRadius: 24,
+    padding: 24,
+    borderRadius: 20,
     marginTop: -60,
     backgroundColor: "#f5f5f5",
   },
