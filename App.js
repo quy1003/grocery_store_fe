@@ -7,14 +7,7 @@ import Welcome from "./src/components/Login/Welcome";
 import Login from "./src/components/Login/Login";
 
 export default function App() {
-  return <Welcome />;
+  return <MyTabs/>
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+
