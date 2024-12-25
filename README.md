@@ -8,7 +8,7 @@ Installing NodeJS
 Installing React Native Tooling
 > `npm install -g react-native-app`
 
-> create-react-app <project-name>
+> create-react-app <<project-name>>
 
 > Waiting for a couple of times ...   
  ## Cloning this project
