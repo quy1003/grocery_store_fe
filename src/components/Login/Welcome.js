@@ -1,9 +1,17 @@
 import { Text } from "react-native"
-
+import {
+    Button,
+    ButtonText,
+    ButtonSpinner,
+    ButtonIcon,
+    ButtonGroup,
+  } from "@/components/ui/button"
 
 const Welcome = () => {
     return (
-        <Text>Welcome</Text>
+        <Button size="md" variant="solid" action="primary">
+            <ButtonText>Hello World!</ButtonText>
+        </Button>
     )
 }
 
