@@ -4,5 +4,6 @@
     "slug": "grocery_store_fe",
     "version": "1.0.0"
   },
-  "name": "grocery_store_fe"
+  "name": "grocery_store_fe",
+  "newArchEnabled": true
 }

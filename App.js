@@ -5,10 +5,9 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import MyTabs from './src/components/MyTabs';
 import Welcome from './src/components/Login/Welcome';
-import { theme } from './src/configs/theme';
 import { Box } from "@/components/ui/box"
 export default function App() {
-  return <GluestackUIProvider config={theme} mode="light">
+  return <GluestackUIProvider mode="light">
     <Box className="m-default"> 
       <Welcome />
     </Box>
