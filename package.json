@@ -10,6 +10,7 @@
     "web": "DARK_MODE=media expo start --web"
   },
   "dependencies": {
+    "@gluestack-ui/input": "^0.1.32",
     "@gluestack-ui/button": "^1.0.8",
     "@gluestack-ui/icon": "^0.1.25",
     "@gluestack-ui/nativewind-utils": "^1.0.26",
