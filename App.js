@@ -1,13 +1,28 @@
-import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import MyTabs from "./src/components/MyTabs";
-import Welcome from "./src/components/Login/Welcome";
-import Login from "./src/components/Login/Login";
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import Login from './src/components/Login/Login';
+import DemoComponent from './src/components/Login/Demo';
+
 
 export default function App() {
-  return <MyTabs/>
+  const [showComponentB, setShowComponentB] = useState(false);
+
+  const handleFinish = () => {
+    setShowComponentB(true);
+  };
+
+  return (
+    <View style={styles.container}>
+      {showComponentB ? <Login /> : <DemoComponent onFinish={handleFinish} />}
+    </View>
+  );
 }
 
-
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+});
