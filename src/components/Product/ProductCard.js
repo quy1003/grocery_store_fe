@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Link } from "@react-navigation/native";
 import { Image, StyleSheet, Text } from "react-native";
 
-export default function ProductCard({imgUrl, name, price, unit, quantity}) {
+export default function ProductCard({ imgUrl, name, price, unit, quantity }) {
   return (
     <Card style={styles.container}>
       <Image

@@ -6,6 +6,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import FavoriteScreen from "./Screens/FavoriteScreen";
 import CartScreen from "./Screens/CartScreen";
 import { StyleSheet } from "react-native";
+import ProductDetailsScreen from "@/src/components/Screens/ProductDetailsScreen";
 const Tab = createBottomTabNavigator();
 
 export default function MyTabs() {
@@ -35,6 +36,20 @@ export default function MyTabs() {
         <Tab.Screen
           name="Favorite"
           component={FavoriteScreen}
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ focused, color, size }) => (
+              <Ionicons
+                name={focused ? "star" : "star-outline"}
+                size={size}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Test"
+          component={ProductDetailsScreen}
           options={{
             headerShown: false,
             tabBarIcon: ({ focused, color, size }) => (
