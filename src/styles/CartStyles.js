@@ -21,7 +21,7 @@ export default StyleSheet.create({
     color:'white',
     letterSpacing: 4,
     textAlign: 'center',
-    backgroundColor:'#4CAF50',
+    backgroundColor:'#56995d',
     borderRadius:8,
     padding:10,
     
@@ -76,7 +76,7 @@ export default StyleSheet.create({
   },
   checkoutButton: {
     marginTop: 20,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#56995d',
     padding: 15,
     alignItems: 'center',
     borderRadius: 8,
