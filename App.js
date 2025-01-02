@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import Login from './src/components/Login/Login';
-import DemoComponent from './src/components/Login/Demo';
+import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
+import Login from "./src/components/Login/Login";
+import DemoComponent from "./src/components/Login/Demo";
 import client from "@/src/configs/apolloClient";
 import { ApolloProvider } from "@apollo/client";
+import MyTabs from "@/src/components/MyTabs";
 
 export default function App() {
   const [showComponentB, setShowComponentB] = useState(false);
@@ -14,9 +15,14 @@ export default function App() {
 
   return (
     <ApolloProvider client={client}>
-    <View style={styles.container}>
-      {showComponentB ? <Login /> : <DemoComponent onFinish={handleFinish} />}
-    </View>
+      {/* <View style={styles.container}>
+        {showComponentB ? (
+          <MyTabs />
+        ) : (
+          <DemoComponent onFinish={handleFinish} />
+        )}
+      </View> */}
+      <MyTabs />
     </ApolloProvider>
   );
 }
@@ -24,8 +30,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
 });
