@@ -2,7 +2,8 @@
   "expo": {
     "name": "grocery_store_fe",
     "slug": "grocery_store_fe",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "userInterfaceStyle": "automatic"
   },
   "name": "grocery_store_fe",
   "newArchEnabled": true

@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { gql, useQuery } from "@apollo/client";
+import { DatePickerIOSBase } from "react-native";
 
 const GET_PRODUCTS = gql`
   {
@@ -31,10 +32,11 @@ const HomeScreen = () => {
 
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
-  // const { loading, error, data } = useQuery(GET_RECOMMENDED_VIDEOS);
+  const { loading, error, data } = useQuery(GET_PRODUCTS);
+  console.log("Check data: ", data.products.items[0]);
 
-  // if (loading) return <Text>Loading...</Text>;
-  // if (error) return <Text>Error: {error.message}</Text>;
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error.message}</Text>;
   return (
     <BaseScreen
       title="Welcome"
@@ -64,7 +66,7 @@ const HomeScreen = () => {
         <TouchableOpacity title="See All" style={styles.allBtn}>
           <Text style={styles.textBtn}>See All</Text>
         </TouchableOpacity>
-        <Text style={styles.textOffer}>Todays Offers</Text>
+        <Text style={styles.textOffer}>Todays Offers {DatePickerIOSBase}</Text>
         <View style={styles.offerContainer}>
           <OfferCard />
           <OfferCard />
