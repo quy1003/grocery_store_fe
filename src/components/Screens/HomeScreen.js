@@ -33,7 +33,7 @@ const HomeScreen = () => {
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
   const { loading, error, data } = useQuery(GET_PRODUCTS);
-  console.log("Check data: ", data.products.items[0]);
+  console.log("Check data: ", data);
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
