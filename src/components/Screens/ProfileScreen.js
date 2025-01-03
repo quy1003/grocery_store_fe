@@ -1,3 +1,4 @@
+import { UserContext } from "@/App";
 import {
   Avatar,
   AvatarBadge,
@@ -9,11 +10,27 @@ import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import BaseScreen from "@/src/components/BaseScreen";
 import ProfileStyles from "@/src/styles/ProfileStyles";
-import React from "react";
-import { View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useContext } from "react";
+import { Alert, TouchableOpacity, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const ProfileScreen = () => {
+  const [, dispatch] = useContext(UserContext);
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("user");
+
+      dispatch({ type: "LOGOUT" });
+
+      Alert.alert("Logout successfully!", "You just exited our application");
+    } catch (error) {
+      console.info("Error:", error);
+    }
+  };
+  
   return (
     <BaseScreen title="User Profile" subtitle="">
       <Avatar size="2xl" style={{ flex: 1, alignItems: "center", marginTop: "-20%" }}>
@@ -52,6 +69,7 @@ const ProfileScreen = () => {
         action="negative"
         style={ProfileStyles.btnLogout}
       >
+        <TouchableOpacity onPress={handleLogout}>
         <ButtonText
           style={ProfileStyles.btnLogoutText}
         >
@@ -59,6 +77,7 @@ const ProfileScreen = () => {
           Log out
         </ButtonText>
         <ButtonText style={{position:'absolute', top:'18%', right: 15}}><Ionicons name={"arrow-forward-circle-outline"} size={30} /></ButtonText>
+        </TouchableOpacity>
       </Button>
       <View style={{ height: "33%" }}></View>
     </BaseScreen>
