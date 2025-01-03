@@ -23,8 +23,8 @@ export default function App() {
           <DemoComponent onFinish={handleFinish} />
         )}
       </View> */}
-      <MyTabs />
-      {/* <SignUpScreen /> */}
+      {/* <MyTabs /> */}
+      <SignUpScreen />
     </ApolloProvider>
   )
 }
