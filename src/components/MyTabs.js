@@ -7,9 +7,14 @@ import FavoriteScreen from "./Screens/FavoriteScreen";
 import CartScreen from "./Screens/CartScreen";
 import { StyleSheet } from "react-native";
 import ProductDetailsScreen from "@/src/components/Screens/ProductDetailsScreen";
+import { useContext, useEffect, useReducer } from "react";
+import { UserContext } from "@/App";
 const Tab = createBottomTabNavigator();
 
 export default function MyTabs() {
+  const [user, dispatch] = useContext(UserContext, null)
+  
+  console.info("Thông tin user: ", user)
   return (
     <NavigationContainer>
       <Tab.Navigator
