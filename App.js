@@ -8,6 +8,7 @@ import UserReducer from './src/reducers/UserReducer'
 import Login from './src/components/Login/Login'
 import HomeScreen from './src/components/Screens/HomeScreen'
 import DemoComponent from './src/components/Login/Demo'
+import MyTabs from './src/components/MyTabs'
 
 export const UserContext = createContext()
 
@@ -25,7 +26,7 @@ export default function App() {
             <Stack.Screen
               name="Demo"
               component={DemoComponent}
-              options={{ headerShown: false }} // Ẩn header nếu muốn
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="Login"
@@ -33,8 +34,8 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="HomeScreen"
-              component={HomeScreen}
+              name="MyTabs"
+              component={MyTabs}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>
