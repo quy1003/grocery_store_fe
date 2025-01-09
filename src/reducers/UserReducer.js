@@ -1,20 +1,19 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const UserReducer = (state, action) => {
   switch (action.type) {
-    case "LOGIN":
-      const { user } = action.payload;
-      if (user) AsyncStorage.setItem("user", JSON.stringify(user));
+    case 'LOGIN':
+      const { user } = action.payload
+      if (user) AsyncStorage.setItem('user', JSON.stringify(user))
 
-      return {  user };
-    case "LOGOUT":
-      AsyncStorage.removeItem("user");
-      AsyncStorage.removeItem("token");
-      return null;
+      return { user }
+    case 'LOGOUT':
+      AsyncStorage.removeItem('user')
+      AsyncStorage.removeItem('token')
+      return null
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default UserReducer;
-
+export default UserReducer

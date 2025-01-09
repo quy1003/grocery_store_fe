@@ -9,12 +9,29 @@ import Login from './src/components/Login/Login'
 import HomeScreen from './src/components/Screens/HomeScreen'
 import DemoComponent from './src/components/Login/Demo'
 import MyTabs from './src/components/MyTabs'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const UserContext = createContext()
 
 export default function App() {
-  const initialUserState = null
-  const [user, dispatch] = useReducer(UserReducer, initialUserState)
+  const getItemFromStorage = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key)
+      if (value !== null) {
+        console.log('Value:', value)
+        const user = JSON.parse(value)
+        return user
+      }
+      console.log('Không tìm thấy giá trị nào')
+      return null
+    } catch (error) {
+      console.error('Lỗi khi lấy item từ AsyncStorage:', error)
+      return null
+    }
+  }
+  const initialUserState = getItemFromStorage('user')
+
+  const [user, dispatch] = useReducer(UserReducer, initialUserState || null)
 
   const Stack = createNativeStackNavigator()
 
