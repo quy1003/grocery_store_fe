@@ -1,18 +1,19 @@
-import BaseScreen from "@/src/components/BaseScreen";
-import MyInput from "@/src/components/ui/MyInput";
-import OfferCard from "@/src/components/Product/OfferCard";
-import ProductCard from "@/src/components/Product/ProductCard";
-import Tabs from "@/src/components/ui/Tabs";
-import React, { useState } from "react";
+import BaseScreen from '@/src/components/BaseScreen'
+import MyInput from '@/src/components/ui/MyInput'
+import OfferCard from '@/src/components/Product/OfferCard'
+import ProductCard from '@/src/components/Product/ProductCard'
+import Tabs from '@/src/components/ui/Tabs'
+import React, { useState } from 'react'
 import {
   View,
   Text,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-} from "react-native";
-import { gql, useQuery } from "@apollo/client";
-import { DatePickerIOSBase } from "react-native";
+  ActivityIndicator,
+} from 'react-native'
+import { gql, useQuery } from '@apollo/client'
+import { DatePickerIOSBase } from 'react-native'
 
 const GET_PRODUCTS = gql`
   {
@@ -25,25 +26,30 @@ const GET_PRODUCTS = gql`
       }
     }
   }
-`;
+`
 
 const HomeScreen = () => {
-  const tabs = ["Fruits", "Vegetables", "Breads", "Others"];
+  const tabs = ['Fruits', 'Vegetables', 'Breads', 'Others']
 
-  const [selectedTab, setSelectedTab] = useState(tabs[0]);
+  const [selectedTab, setSelectedTab] = useState(tabs[0])
 
-  const { loading, error, data } = useQuery(GET_PRODUCTS);
+  const { loading, error, data } = useQuery(GET_PRODUCTS)
   // console.log("Check data: ", data.products.items[0]);
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (loading)
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size={30} />
+      </View>
+    )
+  if (error) return <Text>Error: {error.message}</Text>
   return (
     <BaseScreen
       title="Welcome"
       subtitle="Find and order your fresh fruits & vegetables"
     >
       <View style={styles.container}>
-        <MyInput placeholder={"Search fresh fruits & vegetables..."} />
+        <MyInput placeholder={'Search fresh fruits & vegetables...'} />
         <Tabs tabs={tabs} activeTab={selectedTab} onPress={setSelectedTab} />
         <ScrollView
           horizontal
@@ -77,18 +83,18 @@ const HomeScreen = () => {
         </View>
       </View>
     </BaseScreen>
-  );
-};
+  )
+}
 
-export default HomeScreen;
+export default HomeScreen
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
+    display: 'flex',
     flex: 1,
     // backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 24,
   },
   card: {
@@ -96,33 +102,33 @@ const styles = StyleSheet.create({
   },
   allBtn: {
     padding: 8,
-    borderColor: "#333",
-    borderStyle: "solid",
+    borderColor: '#333',
+    borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 40,
     width: 180,
     marginVertical: 16,
   },
   textBtn: {
-    textAlign: "center",
-    fontWeight: "bold",
+    textAlign: 'center',
+    fontWeight: 'bold',
     fontSize: 18,
   },
   textOffer: {
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   productContainer: {
     // marginTop: 10,
     // height: "auto",
   },
   offerContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
     paddingVertical: 10,
   },
-});
+})
