@@ -13,21 +13,8 @@ import {
   Alert,
 } from "react-native";
 import { useMutation } from "@apollo/client";
-import { gql } from "graphql-tag";
-
-const CREATE_CUSTOMER_MUTATION = gql`
-  mutation CreateCustomerV2($input: CustomerCreateInput!) {
-    createCustomerV2(input: $input) {
-      customer {
-        id
-        firstname
-        lastname
-        email
-        is_subscribed
-      }
-    }
-  }
-`;
+import { CREATE_CUSTOMER_MUTATION } from "@/src/Query/sign-up";
+import Toast from "../ui/Toast";
 
 const SignUpScreen = () => {
   const [formData, setFormData] = useState({
@@ -38,30 +25,35 @@ const SignUpScreen = () => {
     confirmPassword: "",
     isSubscribed: true,
   });
+  const [toast, setToast] = useState({
+    visible: false,
+    message: "",
+    type: "success",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
-  // Use the useMutation hook with better error handling
   const [createCustomer, { loading }] = useMutation(CREATE_CUSTOMER_MUTATION, {
     onError: (error) => {
-      // Log the full error for debugging
       console.error("GraphQL Error:", error);
-
-      // Extract the specific error message if available
       const errorMessage =
         error.graphQLErrors?.[0]?.message ||
         error.networkError?.result?.errors?.[0]?.message ||
         "Something went wrong. Please try again later.";
 
-      Alert.alert("Error", errorMessage);
+      setToast({
+        visible: true,
+        message: errorMessage,
+        type: "error",
+      });
     },
     onCompleted: (data) => {
-      Alert.alert(
-        "Sign Up Successful",
-        `Welcome ${data.createCustomerV2.customer.firstname}!`
-      );
-      // Add navigation logic here if needed
+      setToast({
+        visible: true,
+        message: `Welcome ${data.createCustomerV2.customer.firstname}!`,
+        type: "success",
+      });
     },
   });
 
@@ -71,27 +63,51 @@ const SignUpScreen = () => {
 
   const validateForm = () => {
     if (!formData.firstName.trim()) {
-      Alert.alert("Error", "First name is required");
+      setToast({
+        visible: true,
+        message: "First name is required",
+        type: "error",
+      });
       return false;
     }
     if (!formData.lastName.trim()) {
-      Alert.alert("Error", "Last name is required");
+      setToast({
+        visible: true,
+        message: "Last name is required",
+        type: "error",
+      });
       return false;
     }
     if (!formData.email.trim()) {
-      Alert.alert("Error", "Email is required");
+      setToast({
+        visible: true,
+        message: "Email is required",
+        type: "error",
+      });
       return false;
     }
     if (!formData.password) {
-      Alert.alert("Error", "Password is required");
+      setToast({
+        visible: true,
+        message: "Password is required",
+        type: "error",
+      });
       return false;
     }
     if (formData.password !== formData.confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
+      setToast({
+        visible: true,
+        message: "Passwords do not match",
+        type: "error",
+      });
       return false;
     }
     if (!isTermsAccepted) {
-      Alert.alert("Error", "Please accept the terms and conditions");
+      setToast({
+        visible: true,
+        message: "Please accept the terms and conditions",
+        type: "error",
+      });
       return false;
     }
     return true;
@@ -120,6 +136,12 @@ const SignUpScreen = () => {
 
   return (
     <SafeAreaView style={SignUpStyles.container}>
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        onHide={() => setToast({ ...toast, visible: false })}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={SignUpStyles.keyboardAvoidView}
