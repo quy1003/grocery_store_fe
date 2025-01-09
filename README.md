@@ -4,11 +4,17 @@ The Boolfly Grocery Store Demo is a modern mobile application designed to showca
  
  ## Prerequisite
 Before you begin installing and running the project, ensure you have the following prerequisites:
-1. **Node.js**  
+a. **Node.js**  
    Ensure you have **Node.js** installed on your machine. You can download it from the [official website](https://nodejs.org/). It is recommended to use the LTS (Long Term Support) version.
-2. **npm (Node Package Manager)**  
+You can verify the installation by running:
+```bash
+node -v
+```
+b. **npm (Node Package Manager)**  
    npm is installed automatically with Node.js. You can verify the installation by running:  
-   > `npm -v`
+```bash
+npm -v
+```
  ## Setup Base Project
 Installing NodeJS 
 > https://nodejs.org/en
@@ -21,10 +27,17 @@ Installing React Native Tooling
 > Waiting for a couple of times ...   
  ## Cloning this project
  ```bash
-# `git clone https://github.com/quy1003/grocery_store_fe.git`  
-# `cd grocery_store_fe`  
-# `npm i`  
-# `npm start`  
+git clone https://github.com/quy1003/grocery_store_fe.git
+```
+```bash
+cd grocery_store_fe
+```
+```bash
+npm i
+```
+```bash
+npm start
+```
 Scan the QR code if using Expo Go or using the virtual machine offered by Android Studio
 
 
