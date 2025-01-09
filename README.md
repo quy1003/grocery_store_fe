@@ -1,4 +1,4 @@
-﻿# GROCERY STORE FRONTEND
+﻿# GROCERY STORE FRONT-END
  ## Description 
 The Boolfly Grocery Store Demo is a modern mobile application designed to showcase the integration of Magento 2’s GraphQL API and Node.js microservices in an eCommerce environment. Developed as a training tool for internship students, this project focuses on demonstrating core concepts of mobile app development, API integration, and scalable architecture in the context of a real-world eCommerce solution.
  ## Setup Base Project
