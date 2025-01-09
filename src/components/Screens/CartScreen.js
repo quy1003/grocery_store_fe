@@ -1,129 +1,146 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import BaseScreen from '../BaseScreen';
-import CartStyles from '@/src/styles/CartStyles';
-import { Button, ButtonText } from '@/components/ui/button';
-import Ionicons from "react-native-vector-icons/Ionicons";
-const CartScreen = () => {
-  const cartItems = [
-    {
-      id: '1',
-      name: 'Potato',
-      price: 200000,
-      quantity: 2,
-      image: 'https://th.bing.com/th/id/OIP.ZFX-ha8ZYhhi6Y6n9HXRlQHaE8?rs=1&pid=ImgDetMain',
-    },
-    {
-      id: '2',
-      name: 'Tomato',
-      price: 500000,
-      quantity: 1,
-      image: 'https://th.bing.com/th/id/R.8884b28d87290e253c4da138cbdbe5df?rik=WrXhafflBrY80w&pid=ImgRaw&r=0',
-    },
-    {
-      id: '3',
-      name: 'Mix Fruits',
-      price: 300000,
-      quantity: 1,
-      image: 'https://th.bing.com/th/id/OIP.c6Tbz7IbCn9bVXzXQSOqhgHaFN?rs=1&pid=ImgDetMain',
-    },
-    {
-      id: '4',
-      name: 'Mix Fruits',
-      price: 300000,
-      quantity: 1,
-      image: 'https://th.bing.com/th/id/OIP.c6Tbz7IbCn9bVXzXQSOqhgHaFN?rs=1&pid=ImgDetMain',
-    },
-    {
-      id: '5',
-      name: 'Mix Fruits',
-      price: 300000,
-      quantity: 1,
-      image: 'https://th.bing.com/th/id/OIP.c6Tbz7IbCn9bVXzXQSOqhgHaFN?rs=1&pid=ImgDetMain',
-    },
-    {
-      id: '6',
-      name: 'Mix Fruits',
-      price: 300000,
-      quantity: 1,
-      image: 'https://th.bing.com/th/id/OIP.c6Tbz7IbCn9bVXzXQSOqhgHaFN?rs=1&pid=ImgDetMain',
-    },
-    {
-      id: '7',
-      name: 'Mix Fruits',
-      price: 300000,
-      quantity: 1,
-      image: 'https://th.bing.com/th/id/OIP.c6Tbz7IbCn9bVXzXQSOqhgHaFN?rs=1&pid=ImgDetMain',
-    },
-    {
-      id: '8',
-      name: 'Mix Fruits',
-      price: 300000,
-      quantity: 1,
-      image: 'https://th.bing.com/th/id/OIP.c6Tbz7IbCn9bVXzXQSOqhgHaFN?rs=1&pid=ImgDetMain',
-    },
-    {
-      id: '9',
-      name: 'Mix Fruits',
-      price: 300000,
-      quantity: 1,
-      image: 'https://th.bing.com/th/id/OIP.c6Tbz7IbCn9bVXzXQSOqhgHaFN?rs=1&pid=ImgDetMain',
-    },
-    {
-      id: '10',
-      name: 'Mix Fruits',
-      price: 300000,
-      quantity: 1,
-      image: 'https://th.bing.com/th/id/OIP.c6Tbz7IbCn9bVXzXQSOqhgHaFN?rs=1&pid=ImgDetMain',
-    },
-    {
-      id: '11',
-      name: 'Mix Fruits',
-      price: 300000,
-      quantity: 1,
-      image: 'https://th.bing.com/th/id/OIP.c6Tbz7IbCn9bVXzXQSOqhgHaFN?rs=1&pid=ImgDetMain',
-    },
-  ];
+import {
+  GET_CUSTOMER_CART,
+  UPDATE_CART_ITEM_QUANTITY,
+  REMOVE_ITEM_FROM_CART,
+} from "@/src/Query/cart";
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  SafeAreaView,
+} from "react-native";
+import { useQuery, useMutation } from "@apollo/client";
+import CartStyles from "@/src/styles/CartStyles";
 
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+const CartScreen = () => {
+  const { loading, error, data } = useQuery(GET_CUSTOMER_CART);
+  const [updateQuantity] = useMutation(UPDATE_CART_ITEM_QUANTITY);
+  const [removeItem] = useMutation(REMOVE_ITEM_FROM_CART);
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error loading cart</Text>;
+
+  const cartItems = data?.customerCart?.items || [];
+  const totalAmount = data?.customerCart?.prices?.grand_total?.value || 0;
+
+  const handleQuantityChange = async (itemId, quantity) => {
+    if (quantity === 0) {
+      try {
+        await removeItem({
+          variables: {
+            cartId: data.customerCart.id,
+            cartItemId: parseInt(itemId),
+          },
+          refetchQueries: ["GetCustomerCart"],
+        });
+      } catch (error) {
+        console.error("Error removing item:", error);
+      }
+    } else {
+      try {
+        await updateQuantity({
+          variables: {
+            cartId: data.customerCart.id,
+            cartItemId: parseInt(itemId),
+            quantity: quantity,
+          },
+          refetchQueries: ["GetCustomerCart"],
+        });
+      } catch (error) {
+        console.error("Error updating quantity:", error);
+      }
+    }
+  };
+
+  const renderSelectedOptions = (item) => {
+    const options = [];
+
+    // Add configurable options
+    if (item.configurable_options?.length > 0) {
+      item.configurable_options.forEach((option) => {
+        options.push(
+          <Text key={option.option_label} style={CartStyles.optionText}>
+            {option.option_label}: {option.value_label}
+          </Text>
+        );
+      });
+    }
+
+    // Add custom options (like weight)
+    if (item.customizable_options?.length > 0) {
+      item.customizable_options.forEach((option) => {
+        options.push(
+          <Text key={option.label} style={CartStyles.optionText}>
+            {option.label}: {option.values[0]?.label}
+          </Text>
+        );
+      });
+    }
+
+    return options.length > 0 ? (
+      <View style={CartStyles.optionsContainer}>{options}</View>
+    ) : null;
   };
 
   return (
-    <BaseScreen title="Grocery Store Cart" subtitle="Your order">
-      <View style={CartStyles.container}>
-        <Text style={CartStyles.title}>Purchasing</Text>
+    <SafeAreaView style={CartStyles.container}>
+      <View style={CartStyles.header}>
+        <TouchableOpacity>
+          <Text style={CartStyles.backButton}>←</Text>
+        </TouchableOpacity>
+        <Text style={CartStyles.headerTitle}>Shopping Cart</Text>
+        <Text style={CartStyles.itemCount}>
+          A total of {cartItems.length} pieces
+        </Text>
+      </View>
 
-        <ScrollView contentContainerStyle={CartStyles.scrollContainer}>
-          {cartItems.map((item) => (
-            <TouchableOpacity key={item.id}>
-              <View style={CartStyles.cartItem} >
-              <Image source={{ uri: item.image }} style={CartStyles.productImage} />
-              <View style={CartStyles.productDetails}>
-                <Text style={CartStyles.productName}>{item.name}</Text>
-                <Text style={CartStyles.productPrice}>${item.price}</Text>
-                <Text style={CartStyles.productQuantity}>Quantity: {item.quantity}</Text>
-                <Text style={CartStyles.productTotal}>Total: ${item.price * item.quantity}</Text>
-              </View>
-              <TouchableOpacity>
-                <Ionicons name={"close-circle-outline"} size={30} />
+      <ScrollView style={CartStyles.itemsContainer}>
+        {cartItems.map((item) => (
+          <View key={item.id} style={CartStyles.itemCard}>
+            <Image
+              source={{ uri: item.product.image.url }}
+              style={CartStyles.itemImage}
+            />
+            <View style={CartStyles.itemInfo}>
+              <Text style={CartStyles.itemName}>{item.product.name}</Text>
+              {renderSelectedOptions(item)}
+              <Text style={CartStyles.itemPrice}>
+                ${item.product.price_range.minimum_price.regular_price.value}
+              </Text>
+            </View>
+            <View style={CartStyles.quantityControls}>
+              <TouchableOpacity
+                style={CartStyles.quantityButton}
+                onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
+              >
+                <Text style={CartStyles.quantityButtonText}>-</Text>
+              </TouchableOpacity>
+              <Text style={CartStyles.quantityText}>{item.quantity}</Text>
+              <TouchableOpacity
+                style={CartStyles.quantityButton}
+                onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
+              >
+                <Text style={CartStyles.quantityButtonText}>+</Text>
               </TouchableOpacity>
             </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+          </View>
+        ))}
+      </ScrollView>
 
+      <View style={CartStyles.footer}>
         <View style={CartStyles.totalContainer}>
-          <Text style={CartStyles.totalText}>Total Payment: ${calculateTotal()}</Text>
+          <Text style={CartStyles.totalLabel}>Total: </Text>
+          <Text style={CartStyles.totalAmount}>${totalAmount}</Text>
         </View>
-
-        <TouchableOpacity style={CartStyles.checkoutButton}>
-          <Text style={CartStyles.checkoutButtonText}>Order</Text>
+        <TouchableOpacity style={CartStyles.continueButton}>
+          <Text style={CartStyles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
       </View>
-    </BaseScreen>
+    </SafeAreaView>
   );
 };
-
 
 export default CartScreen;
