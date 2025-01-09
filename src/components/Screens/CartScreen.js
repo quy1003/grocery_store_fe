@@ -3,7 +3,7 @@ import {
   UPDATE_CART_ITEM_QUANTITY,
   REMOVE_ITEM_FROM_CART,
 } from "@/src/Query/cart";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -16,11 +16,26 @@ import { useQuery, useMutation } from "@apollo/client";
 import CartStyles from "@/src/styles/CartStyles";
 
 const CartScreen = () => {
-  const { loading, error, data } = useQuery(GET_CUSTOMER_CART);
+  const { loading, error, data, startPolling, stopPolling } = useQuery(
+    GET_CUSTOMER_CART,
+    {
+      pollInterval: 1000,
+      fetchPolicy: "network-only",
+    }
+  );
+
   const [updateQuantity] = useMutation(UPDATE_CART_ITEM_QUANTITY);
   const [removeItem] = useMutation(REMOVE_ITEM_FROM_CART);
 
-  if (loading) return <Text>Loading...</Text>;
+  useEffect(() => {
+    startPolling(1000);
+
+    return () => {
+      stopPolling();
+    };
+  }, [startPolling, stopPolling]);
+
+  if (loading && !data) return <Text>Loading...</Text>;
   if (error) return <Text>Error loading cart</Text>;
 
   const cartItems = data?.customerCart?.items || [];
@@ -34,7 +49,16 @@ const CartScreen = () => {
             cartId: data.customerCart.id,
             cartItemId: parseInt(itemId),
           },
-          refetchQueries: ["GetCustomerCart"],
+
+          optimisticResponse: {
+            removeItemFromCart: {
+              cart: {
+                items: cartItems.filter((item) => item.id !== itemId),
+                __typename: "Cart",
+              },
+              __typename: "RemoveItemFromCartOutput",
+            },
+          },
         });
       } catch (error) {
         console.error("Error removing item:", error);
@@ -47,7 +71,20 @@ const CartScreen = () => {
             cartItemId: parseInt(itemId),
             quantity: quantity,
           },
-          refetchQueries: ["GetCustomerCart"],
+
+          optimisticResponse: {
+            updateCartItems: {
+              cart: {
+                items: cartItems.map((item) =>
+                  item.id === itemId
+                    ? { ...item, quantity, __typename: "CartItem" }
+                    : item
+                ),
+                __typename: "Cart",
+              },
+              __typename: "UpdateCartItemsOutput",
+            },
+          },
         });
       } catch (error) {
         console.error("Error updating quantity:", error);
@@ -58,7 +95,6 @@ const CartScreen = () => {
   const renderSelectedOptions = (item) => {
     const options = [];
 
-    // Add configurable options
     if (item.configurable_options?.length > 0) {
       item.configurable_options.forEach((option) => {
         options.push(
@@ -69,7 +105,6 @@ const CartScreen = () => {
       });
     }
 
-    // Add custom options (like weight)
     if (item.customizable_options?.length > 0) {
       item.customizable_options.forEach((option) => {
         options.push(
