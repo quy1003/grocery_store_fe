@@ -8,8 +8,7 @@ Before you begin installing and running the project, ensure you have the followi
    Ensure you have **Node.js** installed on your machine. You can download it from the [official website](https://nodejs.org/). It is recommended to use the LTS (Long Term Support) version.
 2. **npm (Node Package Manager)**  
    npm is installed automatically with Node.js. You can verify the installation by running:  
-   ```bash
-   npm -v
+   > `npm -v`
  ## Setup Base Project
 Installing NodeJS 
 > https://nodejs.org/en
