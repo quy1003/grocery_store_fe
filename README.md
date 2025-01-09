@@ -20,9 +20,13 @@ Installing React Native Tooling
 
 > Waiting for a couple of times ...   
  ## Cloning this project
-`git clone https://github.com/quy1003/grocery_store_fe.git`  
-`cd grocery_store_fe`  
-`npm i`  
+ ```bash
+`git clone https://github.com/quy1003/grocery_store_fe.git`
+ ```bash
+`cd grocery_store_fe`
+ ```bash
+`npm i`
+ ```bash
 `npm start`  
 Scan the QR code if using Expo Go or using the virtual machine offered by Android Studio
 
