@@ -120,17 +120,18 @@ export default StyleSheet.create({
   strengthValue: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "center",
   },
   currentStrengthValue: {
     fontWeight: "900",
-    width: 20,
+    width: 32,
     fontSize: 24,
     marginLeft: 8,
-    marginRight: -4,
+    textAlign: "right",
   },
   currentStrengthMaxValue: {
     fontWeight: "900",
-    width: 20,
+    width: 24,
   },
   wrapper: {
     display: "flex",
