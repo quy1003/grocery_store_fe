@@ -1,5 +1,6 @@
 import { Image } from '@/components/ui/image'
 import MutualStyles from '@/src/styles/MutualStyles'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, { useState, useEffect } from 'react'
 import { Text, Dimensions, View } from 'react-native'
 import Animated, {
@@ -35,7 +36,23 @@ const DemoComponent = ({ onFinish, navigation }) => {
       transform: [{ translateX: translateX.value }],
     }
   })
-
+  const getItemFromStorage = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key)
+      if (value !== null) {
+        return JSON.parse(value)
+      }
+      console.log('Không tìm thấy giá trị nào')
+      return null
+    } catch (error) {
+      console.error('Lỗi khi lấy item từ AsyncStorage:', error)
+      return null
+    }
+  }
+  const userStorage = getItemFromStorage('user')
+  if (userStorage) {
+    navigation.replace('MyTabs')
+  }
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Animated.View style={[animatedStyle]}>

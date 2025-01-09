@@ -26,6 +26,7 @@ const Login = ({ navigation }) => {
   const apolloClient = useApolloClient()
   const [loading, setLoading] = useState(false)
   const [generateCustomerToken] = useMutation(GENERATE_CUSTOMER_TOKEN)
+
   const handleLogin = async () => {
     setLoading(true)
     try {

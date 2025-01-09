@@ -9,12 +9,10 @@ import { StyleSheet } from 'react-native'
 import ProductDetailsScreen from '@/src/components/Screens/ProductDetailsScreen'
 import { useContext, useEffect, useReducer } from 'react'
 import { UserContext } from '@/App'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const Tab = createBottomTabNavigator()
 
 export default function MyTabs({ navigation }) {
-  const [user, dispatch] = useContext(UserContext, null)
-
-  console.info('Thông tin user: ', user)
   return (
     <Tab.Navigator
       screenOptions={{
