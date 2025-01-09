@@ -50,7 +50,7 @@ const Login = ({ navigation }) => {
             },
           })
           showToast('success', 'Login Successfully!')
-          navigation.replace('HomeScreen')
+          navigation.replace('MyTabs')
         } else {
           console.error('Không thể lấy thông tin người dùng.')
           Alert.alert(
