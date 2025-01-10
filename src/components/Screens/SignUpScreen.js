@@ -54,6 +54,7 @@ const SignUpScreen = ({ navigation }) => {
         message: `Welcome ${data.createCustomerV2.customer.firstname}!`,
         type: 'success',
       })
+      navigation.navigate('Login')
     },
   })
 
