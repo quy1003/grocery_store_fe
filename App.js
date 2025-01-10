@@ -10,6 +10,8 @@ import HomeScreen from './src/components/Screens/HomeScreen'
 import DemoComponent from './src/components/Login/Demo'
 import MyTabs from './src/components/MyTabs'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Welcome from './src/components/Login/Welcome'
+import SignUpScreen from './src/components/Screens/SignUpScreen'
 
 export const UserContext = createContext()
 
@@ -36,6 +38,16 @@ export default function App() {
             <Stack.Screen
               name="MyTabs"
               component={MyTabs}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Welcome"
+              component={Welcome}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={SignUpScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>
