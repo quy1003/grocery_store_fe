@@ -14,30 +14,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 export const UserContext = createContext()
 
 export default function App() {
-  const getItemFromStorage = async (key) => {
-    try {
-      const value = await AsyncStorage.getItem(key)
-      if (value !== null) {
-        console.log('Value:', value)
-        const user = JSON.parse(value)
-        return user
-      }
-      console.log('Không tìm thấy giá trị nào')
-      return null
-    } catch (error) {
-      console.error('Lỗi khi lấy item từ AsyncStorage:', error)
-      return null
-    }
-  }
-  const initialUserState = getItemFromStorage('user')
-
-  const [user, dispatch] = useReducer(UserReducer, initialUserState || null)
+  const [user, dispatch] = useReducer(UserReducer, null)
 
   const Stack = createNativeStackNavigator()
 
   return (
-    <ApolloProvider client={client}>
-      <UserContext.Provider value={[user, dispatch]}>
+    <UserContext.Provider value={[user, dispatch]}>
+      <ApolloProvider client={client}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Demo">
             <Stack.Screen
@@ -57,8 +40,8 @@ export default function App() {
             />
           </Stack.Navigator>
         </NavigationContainer>
-      </UserContext.Provider>
-    </ApolloProvider>
+      </ApolloProvider>
+    </UserContext.Provider>
   )
 }
 

@@ -1,7 +1,8 @@
+import { UserContext } from '@/App'
 import { Image } from '@/components/ui/image'
 import MutualStyles from '@/src/styles/MutualStyles'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Text, Dimensions, View } from 'react-native'
 import Animated, {
   Easing,
@@ -12,23 +13,40 @@ import Animated, {
 
 const { width } = Dimensions.get('window')
 
-const DemoComponent = ({ onFinish, navigation }) => {
+const DemoComponent = ({ navigation }) => {
   const opacity = useSharedValue(1)
   const translateX = useSharedValue(0)
-
+  const [user, dispatch] = useContext(UserContext)
   useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const userStorage = await AsyncStorage.getItem('user')
+
+        if (userStorage) {
+          dispatch({ type: 'LOGIN', payload: JSON.parse(userStorage) })
+          navigation.replace('MyTabs')
+
+          navigation.replace('MyTabs')
+          return
+        }
+        navigation.replace('Login')
+      } catch (error) {
+        console.error('Lỗi khi kiểm tra AsyncStorage:', error)
+        navigation.replace('Login')
+      }
+    }
+
     const timer = setTimeout(() => {
       opacity.value = withTiming(0, { duration: 1000, easing: Easing.ease })
       translateX.value = withTiming(width, {
         duration: 1000,
         easing: Easing.ease,
       })
-      navigation.replace('Login')
     }, 4500)
-    setTimeout(onFinish, 4500)
 
+    checkUser()
     return () => clearTimeout(timer)
-  }, [opacity, translateX, onFinish, navigation])
+  }, [navigation, opacity, translateX])
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -36,23 +54,7 @@ const DemoComponent = ({ onFinish, navigation }) => {
       transform: [{ translateX: translateX.value }],
     }
   })
-  const getItemFromStorage = async (key) => {
-    try {
-      const value = await AsyncStorage.getItem(key)
-      if (value !== null) {
-        return JSON.parse(value)
-      }
-      console.log('Không tìm thấy giá trị nào')
-      return null
-    } catch (error) {
-      console.error('Lỗi khi lấy item từ AsyncStorage:', error)
-      return null
-    }
-  }
-  const userStorage = getItemFromStorage('user')
-  if (userStorage) {
-    navigation.replace('MyTabs')
-  }
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Animated.View style={[animatedStyle]}>

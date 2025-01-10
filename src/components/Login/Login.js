@@ -15,10 +15,10 @@ import {
 } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { GENERATE_CUSTOMER_TOKEN } from '@/src/Query/sign-in'
-import { useApolloClient, useMutation, useQuery } from '@apollo/client'
+import { useApolloClient, useMutation } from '@apollo/client'
 import { GET_CURRENT_USER } from '@/src/Query/current-user'
-import { useAnimatedProps } from 'react-native-reanimated'
 import Toast from 'react-native-toast-message'
+
 const Login = ({ navigation }) => {
   const [inputUsername, setInputUsername] = React.useState('')
   const [inputPassword, setInputPassword] = React.useState('')
@@ -26,6 +26,24 @@ const Login = ({ navigation }) => {
   const apolloClient = useApolloClient()
   const [loading, setLoading] = useState(false)
   const [generateCustomerToken] = useMutation(GENERATE_CUSTOMER_TOKEN)
+
+  useEffect(() => {
+    const checkUserInStorage = async () => {
+      try {
+        const userStorage = await AsyncStorage.getItem('user')
+        if (userStorage) {
+          const user = JSON.parse(userStorage)
+          if (user) {
+            dispatch({ type: 'LOGIN', payload: user })
+            navigation.replace('MyTabs')
+          }
+        }
+      } catch (error) {
+        console.error('Error checking AsyncStorage:', error)
+      }
+    }
+    checkUserInStorage()
+  }, [dispatch, navigation])
 
   const handleLogin = async () => {
     setLoading(true)
@@ -36,43 +54,27 @@ const Login = ({ navigation }) => {
 
       if (response?.data?.generateCustomerToken?.token) {
         const token = response.data.generateCustomerToken.token
-
         await AsyncStorage.setItem('token', JSON.stringify({ token }))
 
         const { data } = await apolloClient.query({
           query: GET_CURRENT_USER,
-          fetchPolicy: 'network-only',
         })
-        if (data?.customer) {
-          dispatch({
-            type: 'LOGIN',
-            payload: {
-              user: data.customer,
-            },
-          })
+
+        if (data.customer) {
+          const user = data.customer
+          await AsyncStorage.setItem('user', JSON.stringify(user))
+
+          dispatch({ type: 'LOGIN', payload: user })
           showToast('success', 'Login Successfully!')
           navigation.replace('MyTabs')
         } else {
-          console.error('Không thể lấy thông tin người dùng.')
-          Alert.alert(
-            'Đăng nhập thất bại',
-            'Không thể lấy thông tin người dùng.',
-            [{ text: 'OK', onPress: () => console.log('OK pressed') }],
-            { cancelable: false }
-          )
+          throw new Error('Failed to retrieve user information.')
         }
       } else {
-        console.error('Lỗi: Không nhận được token.')
-        Alert.alert(
-          'Failed to Login',
-          'Cannot be received token from the server',
-          [{ text: 'OK', onPress: () => console.log('OK pressed') }],
-          { cancelable: false }
-        )
+        throw new Error('No token received from server.')
       }
     } catch (err) {
-      // console.log("Error: ", err.message)
-      showToast('error', err.message)
+      showToast('error', err.message || 'Login failed.')
     } finally {
       setLoading(false)
     }
@@ -87,19 +89,11 @@ const Login = ({ navigation }) => {
       visibilityTime: 3000,
     })
   }
+
   return (
-    <BaseScreen
-      title="Login"
-      //   subtitle="Find and order your fresh fruits & vegetables"
-    >
+    <BaseScreen title="Login">
       <View style={{ padding: '5%' }}>
-        <FormControl
-          style={{ marginTop: '10%' }}
-          size="md"
-          isDisabled={false}
-          isReadOnly={false}
-          isRequired={false}
-        >
+        <FormControl style={{ marginTop: '10%' }} size="md">
           <Input className="my-1" style={LoginStyles.inputLogin}>
             <InputField
               style={{ paddingHorizontal: 10 }}
