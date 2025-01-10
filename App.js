@@ -10,34 +10,19 @@ import HomeScreen from './src/components/Screens/HomeScreen'
 import DemoComponent from './src/components/Login/Demo'
 import MyTabs from './src/components/MyTabs'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Welcome from './src/components/Login/Welcome'
+import SignUpScreen from './src/components/Screens/SignUpScreen'
 
 export const UserContext = createContext()
 
 export default function App() {
-  const getItemFromStorage = async (key) => {
-    try {
-      const value = await AsyncStorage.getItem(key)
-      if (value !== null) {
-        console.log('Value:', value)
-        const user = JSON.parse(value)
-        return user
-      }
-      console.log('Không tìm thấy giá trị nào')
-      return null
-    } catch (error) {
-      console.error('Lỗi khi lấy item từ AsyncStorage:', error)
-      return null
-    }
-  }
-  const initialUserState = getItemFromStorage('user')
-
-  const [user, dispatch] = useReducer(UserReducer, initialUserState || null)
+  const [user, dispatch] = useReducer(UserReducer, null)
 
   const Stack = createNativeStackNavigator()
 
   return (
-    <ApolloProvider client={client}>
-      <UserContext.Provider value={[user, dispatch]}>
+    <UserContext.Provider value={[user, dispatch]}>
+      <ApolloProvider client={client}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Demo">
             <Stack.Screen
@@ -55,10 +40,20 @@ export default function App() {
               component={MyTabs}
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="Welcome"
+              component={Welcome}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={SignUpScreen}
+              options={{ headerShown: false }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
-      </UserContext.Provider>
-    </ApolloProvider>
+      </ApolloProvider>
+    </UserContext.Provider>
   )
 }
 

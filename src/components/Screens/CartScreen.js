@@ -120,6 +120,42 @@ const CartScreen = () => {
     ) : null;
   };
 
+  const renderCartItem = (item) => {
+    // Replace the domain in the image URL
+    const fixedImageUrl = item.product.image.url.replace(
+      "https://app.grocery-store.test",
+      "https://magento.quythanh.tk"
+    );
+
+    return (
+      <View key={item.id} style={CartStyles.itemCard}>
+        <Image source={{ uri: fixedImageUrl }} style={CartStyles.itemImage} />
+        <View style={CartStyles.itemInfo}>
+          <Text style={CartStyles.itemName}>{item.product.name}</Text>
+          {renderSelectedOptions(item)}
+          <Text style={CartStyles.itemPrice}>
+            ${item.product.price_range.minimum_price.regular_price.value}
+          </Text>
+        </View>
+        <View style={CartStyles.quantityControls}>
+          <TouchableOpacity
+            style={CartStyles.quantityButton}
+            onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
+          >
+            <Text style={CartStyles.quantityButtonText}>-</Text>
+          </TouchableOpacity>
+          <Text style={CartStyles.quantityText}>{item.quantity}</Text>
+          <TouchableOpacity
+            style={CartStyles.quantityButton}
+            onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
+          >
+            <Text style={CartStyles.quantityButtonText}>+</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={CartStyles.container}>
       <View style={CartStyles.header}>
@@ -133,36 +169,7 @@ const CartScreen = () => {
       </View>
 
       <ScrollView style={CartStyles.itemsContainer}>
-        {cartItems.map((item) => (
-          <View key={item.id} style={CartStyles.itemCard}>
-            <Image
-              source={{ uri: item.product.image.url }}
-              style={CartStyles.itemImage}
-            />
-            <View style={CartStyles.itemInfo}>
-              <Text style={CartStyles.itemName}>{item.product.name}</Text>
-              {renderSelectedOptions(item)}
-              <Text style={CartStyles.itemPrice}>
-                ${item.product.price_range.minimum_price.regular_price.value}
-              </Text>
-            </View>
-            <View style={CartStyles.quantityControls}>
-              <TouchableOpacity
-                style={CartStyles.quantityButton}
-                onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
-              >
-                <Text style={CartStyles.quantityButtonText}>-</Text>
-              </TouchableOpacity>
-              <Text style={CartStyles.quantityText}>{item.quantity}</Text>
-              <TouchableOpacity
-                style={CartStyles.quantityButton}
-                onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
-              >
-                <Text style={CartStyles.quantityButtonText}>+</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
+        {cartItems.map(renderCartItem)}
       </ScrollView>
 
       <View style={CartStyles.footer}>

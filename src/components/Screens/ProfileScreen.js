@@ -17,12 +17,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const ProfileScreen = ({ navigation }) => {
   const [user, dispatch] = useContext(UserContext)
-  console.log('User: ', user)
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('token')
-      await AsyncStorage.removeItem('user')
-
       dispatch({ type: 'LOGOUT' })
 
       Alert.alert('Logout successfully!', 'You just exited our application')
@@ -40,7 +36,7 @@ const ProfileScreen = ({ navigation }) => {
       >
         <AvatarImage
           source={{
-            uri: `https://ui-avatars.com/api/?name=${user?._j.firstname}`,
+            uri: `https://ui-avatars.com/api/?name=${user._j.firstname}}`,
           }}
           borderRadius={70}
           width={140}

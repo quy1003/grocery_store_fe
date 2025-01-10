@@ -1,5 +1,5 @@
-import SignUpStyles from "@/src/styles/SignUpStyles";
-import React, { useState } from "react";
+import SignUpStyles from '@/src/styles/SignUpStyles'
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -11,110 +11,111 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-} from "react-native";
-import { useMutation } from "@apollo/client";
-import { CREATE_CUSTOMER_MUTATION } from "@/src/Query/sign-up";
-import Toast from "../ui/Toast";
+} from 'react-native'
+import { useMutation } from '@apollo/client'
+import { CREATE_CUSTOMER_MUTATION } from '@/src/Query/sign-up'
+import Toast from '../ui/Toast'
 
-const SignUpScreen = () => {
+const SignUpScreen = ({ navigation }) => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
     isSubscribed: true,
-  });
+  })
   const [toast, setToast] = useState({
     visible: false,
-    message: "",
-    type: "success",
-  });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+    message: '',
+    type: 'success',
+  })
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false)
 
   const [createCustomer, { loading }] = useMutation(CREATE_CUSTOMER_MUTATION, {
     onError: (error) => {
-      console.error("GraphQL Error:", error);
+      console.error('GraphQL Error:', error)
       const errorMessage =
         error.graphQLErrors?.[0]?.message ||
         error.networkError?.result?.errors?.[0]?.message ||
-        "Something went wrong. Please try again later.";
+        'Something went wrong. Please try again later.'
 
       setToast({
         visible: true,
         message: errorMessage,
-        type: "error",
-      });
+        type: 'error',
+      })
     },
     onCompleted: (data) => {
       setToast({
         visible: true,
         message: `Welcome ${data.createCustomerV2.customer.firstname}!`,
-        type: "success",
-      });
+        type: 'success',
+      })
+      navigation.navigate('Login')
     },
-  });
+  })
 
   const handleTermsToggle = () => {
-    setIsTermsAccepted(!isTermsAccepted);
-  };
+    setIsTermsAccepted(!isTermsAccepted)
+  }
 
   const validateForm = () => {
     if (!formData.firstName.trim()) {
       setToast({
         visible: true,
-        message: "First name is required",
-        type: "error",
-      });
-      return false;
+        message: 'First name is required',
+        type: 'error',
+      })
+      return false
     }
     if (!formData.lastName.trim()) {
       setToast({
         visible: true,
-        message: "Last name is required",
-        type: "error",
-      });
-      return false;
+        message: 'Last name is required',
+        type: 'error',
+      })
+      return false
     }
     if (!formData.email.trim()) {
       setToast({
         visible: true,
-        message: "Email is required",
-        type: "error",
-      });
-      return false;
+        message: 'Email is required',
+        type: 'error',
+      })
+      return false
     }
     if (!formData.password) {
       setToast({
         visible: true,
-        message: "Password is required",
-        type: "error",
-      });
-      return false;
+        message: 'Password is required',
+        type: 'error',
+      })
+      return false
     }
     if (formData.password !== formData.confirmPassword) {
       setToast({
         visible: true,
-        message: "Passwords do not match",
-        type: "error",
-      });
-      return false;
+        message: 'Passwords do not match',
+        type: 'error',
+      })
+      return false
     }
     if (!isTermsAccepted) {
       setToast({
         visible: true,
-        message: "Please accept the terms and conditions",
-        type: "error",
-      });
-      return false;
+        message: 'Please accept the terms and conditions',
+        type: 'error',
+      })
+      return false
     }
-    return true;
-  };
+    return true
+  }
 
   const handleSignUp = async () => {
-    if (!validateForm()) return;
+    if (!validateForm()) return
 
     try {
       await createCustomer({
@@ -127,12 +128,12 @@ const SignUpScreen = () => {
             is_subscribed: formData.isSubscribed,
           },
         },
-      });
+      })
     } catch (err) {
       // Additional error handling if needed
-      console.error("Try/Catch Error:", err);
+      console.error('Try/Catch Error:', err)
     }
-  };
+  }
 
   return (
     <SafeAreaView style={SignUpStyles.container}>
@@ -143,7 +144,7 @@ const SignUpScreen = () => {
         onHide={() => setToast({ ...toast, visible: false })}
       />
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={SignUpStyles.keyboardAvoidView}
       >
         <ScrollView
@@ -155,7 +156,7 @@ const SignUpScreen = () => {
             {/* Logo Section */}
             <View style={SignUpStyles.logoContainer}>
               <Image
-                source={require("../../assets/logo.png")}
+                source={require('../../assets/logo.png')}
                 style={SignUpStyles.logo}
                 resizeMode="contain"
               />
@@ -265,16 +266,16 @@ const SignUpScreen = () => {
                 disabled={loading}
               >
                 <Text style={SignUpStyles.signUpButtonText}>
-                  {loading ? "Signing Up..." : "Sign Up"}
+                  {loading ? 'Signing Up...' : 'Sign Up'}
                 </Text>
               </TouchableOpacity>
 
               {/* Login Link */}
               <View style={SignUpStyles.loginContainer}>
                 <Text style={SignUpStyles.loginText}>
-                  Already have an account?{" "}
+                  Already have an account?{' '}
                 </Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                   <Text style={SignUpStyles.loginLink}>Sign In</Text>
                 </TouchableOpacity>
               </View>
@@ -283,7 +284,7 @@ const SignUpScreen = () => {
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default SignUpScreen;
+export default SignUpScreen
