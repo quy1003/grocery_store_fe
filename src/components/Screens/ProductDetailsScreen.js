@@ -1,45 +1,49 @@
-import React, { useState } from "react";
-import BaseScreen from "@/src/components/BaseScreen";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import IonIcon from "react-native-vector-icons/Ionicons";
-import Icon from "react-native-vector-icons/FontAwesome";
-import ProductDetailsStyle from "@/src/styles/ProductDetailsStyle";
-import { Slider } from "@rneui/themed";
+import React, { useState } from 'react'
+import BaseScreen from '@/src/components/BaseScreen'
+import {
+  Image,
+  LogBox,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
+import IonIcon from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import ProductDetailsStyle from '@/src/styles/ProductDetailsStyle'
+import { Slider } from '@rneui/themed'
 
 export default function ProductDetailsScreen({
-  productName = "Watermelon",
-  productStatus = "•   In stock",
+  productName = 'Watermelon',
+  productStatus = '•   In stock',
 }) {
-  const star = 4.6;
-  const [sliderValue, setSliderValue] = useState(2); // State for slider value
+  const star = 4.6
+  const [sliderValue, setSliderValue] = useState(2) // State for slider value
 
   const renderStar = (value) => {
+    LogBox.ignoreLogs([
+      'Warning: Slider: Support for defaultProps will be removed',
+    ])
     return (
       <Icon
-        name={
-          value < 0.3
-            ? "star-o"
-            : value > 0.7
-            ? "star"
-            : "star-half-o"
-        }
+        name={value < 0.3 ? 'star-o' : value > 0.7 ? 'star' : 'star-half-o'}
         size={24}
         color="#f28419"
         key={Math.random()} // Use unique key
       />
-    );
-  };
+    )
+  }
 
   const renderStarReview = (stars) => {
-    const review = [];
+    const review = []
     for (let i = 1; i <= Math.floor(stars); i++) {
-      review.push(renderStar(1));
+      review.push(renderStar(1))
     }
     if (stars % 1 !== 0) {
-      review.push(renderStar(stars % 1));
+      review.push(renderStar(stars % 1))
     }
-    return review;
-  };
+    return review
+  }
 
   return (
     <BaseScreen title={productName} leftSubtitle={productStatus}>
@@ -48,7 +52,7 @@ export default function ProductDetailsScreen({
         <View style={ProductDetailsStyle.productInfo}>
           <Image
             source={{
-              uri: "https://cdn.tgdd.vn/Products/Images/8788/226930/bhx/dua-hau-do-202402271437411608.jpg",
+              uri: 'https://cdn.tgdd.vn/Products/Images/8788/226930/bhx/dua-hau-do-202402271437411608.jpg',
             }}
             style={ProductDetailsStyle.img}
           />
@@ -56,7 +60,7 @@ export default function ProductDetailsScreen({
             <View style={ProductDetailsStyle.starsContainer}>
               {renderStarReview(star)}
             </View>
-            <Text style={ProductDetailsStyle.reviewCount}>{"250 Likes"}</Text>
+            <Text style={ProductDetailsStyle.reviewCount}>{'250 Likes'}</Text>
           </View>
         </View>
 
@@ -104,12 +108,12 @@ export default function ProductDetailsScreen({
                 minimumValue={0}
                 step={1}
                 allowTouchTrack
-                trackStyle={{ height: 5, backgroundColor: "#44994d" }}
+                trackStyle={{ height: 5, backgroundColor: '#44994d' }}
                 minimumTrackTintColor="#44994d"
                 thumbStyle={{
                   height: 20,
                   width: 20,
-                  backgroundColor: "#e9f7e3",
+                  backgroundColor: '#e9f7e3',
                 }}
               />
             </View>
@@ -134,5 +138,5 @@ export default function ProductDetailsScreen({
         </TouchableOpacity>
       </View>
     </BaseScreen>
-  );
+  )
 }
