@@ -47,6 +47,7 @@ const HomeScreen = () => {
     <BaseScreen
       title="Welcome"
       subtitle="Find and order your fresh fruits & vegetables"
+      backScreenName={'Welcome'}
     >
       <View style={styles.container}>
         <MyInput placeholder={'Search fresh fruits & vegetables...'} />

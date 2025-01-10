@@ -25,13 +25,10 @@ const DemoComponent = ({ navigation }) => {
         if (userStorage) {
           dispatch({ type: 'LOGIN', payload: JSON.parse(userStorage) })
           navigation.replace('MyTabs')
-
-          navigation.replace('MyTabs')
           return
-        }
-        navigation.replace('Login')
+        } else navigation.replace('Welcome')
       } catch (error) {
-        console.error('Lỗi khi kiểm tra AsyncStorage:', error)
+        console.error('Something wrong in AsyncStorage:', error)
         navigation.replace('Login')
       }
     }
@@ -39,13 +36,20 @@ const DemoComponent = ({ navigation }) => {
     const timer = setTimeout(() => {
       opacity.value = withTiming(0, { duration: 1000, easing: Easing.ease })
       translateX.value = withTiming(width, {
-        duration: 1000,
+        duration: 4000,
         easing: Easing.ease,
       })
-    }, 4500)
+    }, 1000)
 
-    checkUser()
-    return () => clearTimeout(timer)
+    const checkUserTimer = setTimeout(() => {
+      checkUser()
+    }, 2000)
+    checkUserTimer
+
+    return () => {
+      clearTimeout(timer)
+      clearTimeout(checkUserTimer)
+    }
   }, [navigation, opacity, translateX])
 
   const animatedStyle = useAnimatedStyle(() => {
