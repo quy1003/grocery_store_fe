@@ -16,7 +16,7 @@ const { height, width } = Dimensions.get('window')
 
 const Welcome = ({ navigation }) => {
   return (
-    <SafeAreaView style={{ flex: 1, marginTop: 25 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground
         source={{
           uri: 'https://media.istockphoto.com/id/1718516554/photo/full-frame-of-assortment-of-healthy-and-fresh-fruits.webp?a=1&b=1&s=612x612&w=0&k=20&c=R5kRarCiJjLmzKIEv_8NEEscMdesZFWwYqxnDyJ7E2s=',
