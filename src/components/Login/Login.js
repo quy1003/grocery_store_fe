@@ -91,7 +91,7 @@ const Login = ({ navigation }) => {
   }
 
   return (
-    <BaseScreen title="Login">
+    <BaseScreen title="Login" backScreenName={'Welcome'}>
       <View style={{ padding: '5%' }}>
         <FormControl style={{ marginTop: '10%' }} size="md">
           <Input className="my-1" style={LoginStyles.inputLogin}>
