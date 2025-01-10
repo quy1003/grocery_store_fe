@@ -12,7 +12,7 @@ import { UserContext } from '@/App'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 const Tab = createBottomTabNavigator()
 
-export default function MyTabs({ navigation }) {
+export default function MyTabs({ navigation, route }) {
   return (
     <Tab.Navigator
       screenOptions={{
