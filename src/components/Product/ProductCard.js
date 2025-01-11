@@ -1,22 +1,30 @@
 import { Card } from "@/components/ui/card";
-import { Link } from "@react-navigation/native";
-import { Image, StyleSheet, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Image, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-export default function ProductCard({ imgUrl, name, price, unit, quantity }) {
+export default function ProductCard({ imgUrl, name, price, sku }) {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate("ProductDetail", { sku });
+  };
+
   return (
-    <Card style={styles.container}>
-      <Image
-        source={{
-          uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYm6VNnITJhsBKCe5horUs5C8aEfgxozfiGA&s",
-        }}
-        alt="image"
-        style={styles.img}
-      />
-      <Text style={styles.name}>Onion</Text>
-      <Text style={styles.price}>$25</Text>
-      <Text>2 kg</Text>
-      <Link href="https://gluestack.io/" isExternal></Link>
-    </Card>
+    <TouchableOpacity onPress={handlePress}>
+      <Card style={styles.container}>
+        <Image
+          source={{
+            uri: imgUrl,
+          }}
+          alt="image"
+          style={styles.img}
+        />
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.price}>
+          {price.value} {price.currency}
+        </Text>
+      </Card>
+    </TouchableOpacity>
   );
 }
 
@@ -28,7 +36,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 10,
     display: "flex",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
     alignItems: "flex-start",
   },
   img: {
@@ -40,6 +48,8 @@ const styles = StyleSheet.create({
   name: {
     fontWeight: "bold",
     fontSize: 18,
+    textAlign: "center",
+    width: "100%",
   },
   price: {
     fontWeight: "bold",

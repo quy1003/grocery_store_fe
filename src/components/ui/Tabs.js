@@ -1,11 +1,4 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  Touchable,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 export default function Tabs({ tabs, activeTab, onPress }) {
   return (
@@ -14,10 +7,10 @@ export default function Tabs({ tabs, activeTab, onPress }) {
       style={styles.container}
       showsHorizontalScrollIndicator={false}
     >
-      {tabs.map((tab, index) => {
+      {tabs.map((tab) => {
         return (
           <TouchableOpacity
-            key={index}
+            key={tab.id}
             style={styles.tab}
             onPress={() => onPress(tab)}
           >
@@ -28,7 +21,7 @@ export default function Tabs({ tabs, activeTab, onPress }) {
                   : styles.tabText
               }
             >
-              {tab}
+              {tab.name}
             </Text>
           </TouchableOpacity>
         );

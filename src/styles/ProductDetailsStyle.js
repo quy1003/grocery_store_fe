@@ -144,6 +144,14 @@ export default StyleSheet.create({
     fontSize: 21,
     // width: "20%",
   },
+  reTotal: {
+    fontWeight: "900",
+    color: "#5fa762",
+    fontSize: 21,
+    textDecorationLine: "line-through",
+    textDecorationStyle: "solid",
+    // width: "20%",
+  },
   totalText: {
     fontWeight: "900",
     fontSize: 21,
