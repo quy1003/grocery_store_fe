@@ -80,6 +80,7 @@ const HomeScreen = () => {
                   imgUrl={"https://cdn.tgdd.vn/2020/08/content/1-800x814-1.jpg"}
                   name={p.name}
                   price={p.price_range.minimum_price.final_price}
+                  sku={p.sku}
                 />
               </View>
             ))}
