@@ -11,6 +11,7 @@ import DemoComponent from "./src/components/Login/Demo";
 import MyTabs from "./src/components/MyTabs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Welcome from "./src/components/Login/Welcome";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SignUpScreen from "./src/components/Screens/SignUpScreen";
 import ProductDetailsScreen from "@/src/components/Screens/ProductDetailsScreen";
 
@@ -22,44 +23,46 @@ export default function App() {
   const Stack = createNativeStackNavigator();
 
   return (
-    <UserContext.Provider value={[user, dispatch]}>
-      <ApolloProvider client={client}>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="Demo">
-            <Stack.Screen
-              name="Demo"
-              component={DemoComponent}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="MyTabs"
-              component={MyTabs}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Welcome"
-              component={Welcome}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Signup"
-              component={SignUpScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="ProductDetail"
-              component={ProductDetailsScreen}
-              options={{ headerShown: false }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </ApolloProvider>
-    </UserContext.Provider>
+    <GestureHandlerRootView>
+      <UserContext.Provider value={[user, dispatch]}>
+        <ApolloProvider client={client}>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="Demo">
+              <Stack.Screen
+                name="Demo"
+                component={DemoComponent}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="MyTabs"
+                component={MyTabs}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Welcome"
+                component={Welcome}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Signup"
+                component={SignUpScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ProductDetail"
+                component={ProductDetailsScreen}
+                options={{ headerShown: false }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </ApolloProvider>
+      </UserContext.Provider>
+    </GestureHandlerRootView>
   );
 }
 
