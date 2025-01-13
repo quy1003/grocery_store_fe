@@ -167,4 +167,12 @@ export default StyleSheet.create({
     paddingHorizontal: 12,
     marginTop: 32,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  favoriteButton: {
+    padding: 8,
+  },
 });
