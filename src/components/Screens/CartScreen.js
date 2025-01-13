@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useQuery, useMutation } from "@apollo/client";
 import CartStyles from "@/src/styles/CartStyles";
-
+import { IMAGE_URL_DOMAIN, BASE_IMAGE_URL } from "@env";
 const CartScreen = () => {
   const { loading, error, data, startPolling, stopPolling } = useQuery(
     GET_CUSTOMER_CART,
@@ -123,10 +123,9 @@ const CartScreen = () => {
   const renderCartItem = (item) => {
     // Replace the domain in the image URL
     const fixedImageUrl = item.product.image.url.replace(
-      "https://app.grocery-store.test",
-      "https://magento.quythanh.tk"
+      BASE_IMAGE_URL,
+      IMAGE_URL_DOMAIN
     );
-
     return (
       <View key={item.id} style={CartStyles.itemCard}>
         <Image source={{ uri: fixedImageUrl }} style={CartStyles.itemImage} />
@@ -155,7 +154,6 @@ const CartScreen = () => {
       </View>
     );
   };
-
   return (
     <SafeAreaView style={CartStyles.container}>
       <View style={CartStyles.header}>

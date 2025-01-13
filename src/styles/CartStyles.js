@@ -115,4 +115,16 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  weightContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 4,
+  },
+  weightIcon: {
+    marginRight: 4,
+  },
+  weightText: {
+    color: "#666666",
+    fontSize: 14,
+  },
 });
