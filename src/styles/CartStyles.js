@@ -127,4 +127,64 @@ export default StyleSheet.create({
     color: "#666666",
     fontSize: 14,
   },
+  priceContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  itemTotal: {
+    fontSize: 12,
+    color: "#666",
+  },
+  deleteButton: {
+    width: 100,
+    backgroundColor: "#FF3B30",
+  },
+  deleteButtonContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  deleteButtonText: {
+    color: "white",
+    fontWeight: "200",
+    padding: 20,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+  },
+  emptyContent: {
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  emptyIcon: {
+    marginBottom: 20,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333333",
+    marginBottom: 10,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: "#666666",
+    textAlign: "center",
+    marginBottom: 30,
+  },
+  shopNowButton: {
+    backgroundColor: "#007AFF",
+    paddingHorizontal: 40,
+    paddingVertical: 15,
+    borderRadius: 25,
+    marginTop: 20,
+  },
+  shopNowButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
 });

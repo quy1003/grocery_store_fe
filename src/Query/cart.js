@@ -7,6 +7,7 @@ export const GET_CUSTOMER_CART = gql`
       items {
         id
         product {
+          id
           name
           sku
           image {
