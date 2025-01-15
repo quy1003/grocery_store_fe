@@ -7,6 +7,7 @@ export const GET_CUSTOMER_CART = gql`
       items {
         id
         product {
+          id
           name
           sku
           image {
@@ -61,6 +62,39 @@ export const REMOVE_ITEM_FROM_CART = gql`
       cart {
         items {
           id
+        }
+      }
+    }
+  }
+`;
+
+export const CREATE_CART = gql`
+  mutation createEmptyCart {
+    createEmptyCart
+  }
+`;
+
+export const ADD_PRODUCT_TO_CART = gql`
+  mutation addSimpleProductToCart(
+    $cartId: String!
+    $sku: String!
+    $quantity: Float!
+  ) {
+    addSimpleProductsToCart(
+      input: {
+        cart_id: $cartId
+        cart_items: [{ data: { quantity: $quantity, sku: $sku } }]
+      }
+    ) {
+      cart {
+        id
+        items {
+          id
+          product {
+            name
+            sku
+          }
+          quantity
         }
       }
     }
