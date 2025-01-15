@@ -1,24 +1,24 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { NavigationContainer } from '@react-navigation/native'
-import HomeScreen from './Screens/HomeScreen'
-import ProfileScreen from './Screens/ProfileScreen'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import FavoriteScreen from './Screens/FavoriteScreen'
-import CartScreen from './Screens/CartScreen'
-import { StyleSheet } from 'react-native'
-import ProductDetailsScreen from '@/src/components/Screens/ProductDetailsScreen'
-import { useContext, useEffect, useReducer } from 'react'
-import { UserContext } from '@/App'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-const Tab = createBottomTabNavigator()
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import HomeScreen from "./Screens/HomeScreen";
+import ProfileScreen from "./Screens/ProfileScreen";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import FavoriteScreen from "./Screens/FavoriteScreen";
+import CartScreen from "./Screens/CartScreen";
+import { StyleSheet } from "react-native";
+import ProductDetailsScreen from "@/src/components/Screens/ProductDetailsScreen";
+import { useContext, useEffect, useReducer } from "react";
+import { UserContext } from "@/App";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const Tab = createBottomTabNavigator();
 
 export default function MyTabs({ navigation, route }) {
   return (
     <Tab.Navigator
       screenOptions={{
         lazy: true,
-        tabBarStyle: { backgroundColor: '#efffe8' },
-        tabBarActiveTintColor: '#bfeca1',
+        tabBarStyle: { backgroundColor: "#efffe8" },
+        tabBarActiveTintColor: "#bfeca1",
       }}
     >
       <Tab.Screen
@@ -28,7 +28,7 @@ export default function MyTabs({ navigation, route }) {
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
-              name={focused ? 'home' : 'home-outline'}
+              name={focused ? "home" : "home-outline"}
               size={size}
               color={color}
             />
@@ -42,7 +42,7 @@ export default function MyTabs({ navigation, route }) {
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
-              name={focused ? 'star' : 'star-outline'}
+              name={focused ? "star" : "star-outline"}
               size={size}
               color={color}
             />
@@ -56,7 +56,7 @@ export default function MyTabs({ navigation, route }) {
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
-              name={focused ? 'star' : 'star-outline'}
+              name={focused ? "star" : "star-outline"}
               size={size}
               color={color}
             />
@@ -70,7 +70,7 @@ export default function MyTabs({ navigation, route }) {
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
-              name={focused ? 'cart' : 'cart-outline'}
+              name={focused ? "cart" : "cart-outline"}
               size={size}
               color={color}
             />
@@ -84,7 +84,7 @@ export default function MyTabs({ navigation, route }) {
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
-              name={focused ? 'person' : 'person-outline'}
+              name={focused ? "person" : "person-outline"}
               size={size}
               color={color}
             />
@@ -92,11 +92,11 @@ export default function MyTabs({ navigation, route }) {
         }}
       />
     </Tab.Navigator>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#efffe8',
+    backgroundColor: "#efffe8",
   },
-})
+});
