@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
   FlatList,
   SafeAreaView,
-  Alert,
+  Modal,
+  StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { useQuery, useMutation } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,7 +20,6 @@ import {
   Swipeable,
 } from "react-native-gesture-handler";
 import FavoriteStyles from "@/src/styles/FavoriteStyles";
-import { ADD_PRODUCT_TO_CART } from "@/src/Query/cart";
 import BaseScreen from "../BaseScreen";
 
 const WISHLIST_STORAGE_KEY = "@wishlist_items";
@@ -42,6 +43,8 @@ const EmptyFavorites = ({ navigation }) => (
 const FavoriteScreen = ({ navigation }) => {
   const [localWishlistItems, setLocalWishlistItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
   const swipeableRefs = useRef(new Map());
 
   const { data, refetch } = useQuery(GET_WISHLIST, {
@@ -58,14 +61,6 @@ const FavoriteScreen = ({ navigation }) => {
   const [removeFromWishlist] = useMutation(REMOVE_FROM_WISHLIST, {
     onError: (error) => {
       console.error("Remove from wishlist error:", error);
-      Alert.alert("Error", "Failed to remove item. Please try again.");
-    },
-  });
-
-  const [addProductToCart] = useMutation(ADD_PRODUCT_TO_CART, {
-    onError: (error) => {
-      console.error("Add to cart error:", error);
-      Alert.alert("Error", "Failed to add item to cart. Please try again.");
     },
   });
 
@@ -101,41 +96,10 @@ const FavoriteScreen = ({ navigation }) => {
     }
   };
 
-  // const handleAddAllToCart = async () => {
-  //   try {
-  //     const cartId = await AsyncStorage.getItem("@cart_id");
-  //     if (!cartId) {
-  //       Alert.alert("Error", "Cart ID not found. Please try again.");
-  //       return;
-  //     }
-
-  //     const promises = localWishlistItems.map((item) =>
-  //       addProductToCart({
-  //         variables: {
-  //           cartId,
-  //           sku: item.product.sku,
-  //           quantity: 1, // Số lượng mặc định là 1
-  //         },
-  //       })
-  //     );
-
-  //     await Promise.all(promises);
-  //     Alert.alert("Success", "All items have been added to the cart.");
-  //   } catch (error) {
-  //     console.error("Add all to cart error:", error);
-  //     Alert.alert(
-  //       "Error",
-  //       "Failed to add all items to cart. Please try again."
-  //     );
-  //   }
-  // };
-
-  const handleDeleteItem = async (itemId) => {
-    const swipeable = swipeableRefs.current.get(itemId);
-
+  const handleDeleteItem = async () => {
     try {
       const updatedItems = localWishlistItems.filter(
-        (item) => item.id !== itemId,
+        (item) => item.id !== itemToDelete,
       );
       setLocalWishlistItems(updatedItems);
       await saveWishlistToStorage(updatedItems);
@@ -143,43 +107,20 @@ const FavoriteScreen = ({ navigation }) => {
       await removeFromWishlist({
         variables: {
           wishlistId: data?.customer?.wishlist?.id,
-          wishlistItemsIds: [itemId],
+          wishlistItemsIds: [itemToDelete],
         },
       });
+      setModalVisible(false);
+      setItemToDelete(null);
     } catch (error) {
       console.error("Delete error:", error);
-
-      if (swipeable) {
-        swipeable.close();
-      }
-
       loadWishlistFromStorage();
-
-      Alert.alert("Error", "Failed to remove item. Please try again.");
     }
   };
 
   const showDeleteConfirmation = (itemId) => {
-    Alert.alert(
-      "Remove from Favorites",
-      "Are you sure you want to remove this item from your favorites?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => {
-            const swipeable = swipeableRefs.current.get(itemId);
-            if (swipeable) {
-              swipeable.close();
-            }
-          },
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => handleDeleteItem(itemId),
-        },
-      ],
-    );
+    setItemToDelete(itemId);
+    setModalVisible(true);
   };
 
   const renderRightActions = (itemId) => {
@@ -247,7 +188,7 @@ const FavoriteScreen = ({ navigation }) => {
     return (
       <SafeAreaView style={FavoriteStyles.container}>
         <View style={FavoriteStyles.center}>
-          <Text>Loading...</Text>
+          <ActivityIndicator size="large" color="#000" />
         </View>
       </SafeAreaView>
     );
@@ -271,6 +212,38 @@ const FavoriteScreen = ({ navigation }) => {
             contentContainerStyle={FavoriteStyles.listContent}
           />
         )}
+
+        <Modal
+          visible={isModalVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={FavoriteStyles.modalOverlay}>
+            <View style={FavoriteStyles.modalContainer}>
+              <Text style={FavoriteStyles.modalTitle}>
+                Remove from Favorites
+              </Text>
+              <Text style={FavoriteStyles.modalMessage}>
+                Are you sure you want to remove this item from your favorites?
+              </Text>
+              <View style={FavoriteStyles.modalButtons}>
+                <TouchableOpacity
+                  style={FavoriteStyles.cancelButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={FavoriteStyles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={FavoriteStyles.deleteButton}
+                  onPress={handleDeleteItem}
+                >
+                  <Text style={FavoriteStyles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </GestureHandlerRootView>
   );

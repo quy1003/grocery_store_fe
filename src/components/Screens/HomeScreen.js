@@ -143,7 +143,7 @@ const HomeScreen = () => {
     <BaseScreen
       title="Welcome"
       subtitle="Find and order your fresh fruits & vegetables"
-      backScreenName={"Welcome"}
+      backScreenName={"Home"}
     >
       <View style={styles.container}>
         <View style={styles.searchContainer}>

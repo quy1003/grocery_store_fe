@@ -109,4 +109,54 @@ export default StyleSheet.create({
     fontWeight: "600",
     color: "#000",
   },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
+    width: "80%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  modalMessage: {
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  cancelButton: {
+    flex: 1,
+    marginRight: 10,
+    padding: 10,
+    backgroundColor: "lightgreen",
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  cancelButtonText: {
+    color: "white",
+  },
+  deleteButton: {
+    flex: 1,
+    marginLeft: 10,
+    padding: 10,
+    backgroundColor: "#ff4444",
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  deleteButtonText: {
+    color: "white",
+  },
 });
