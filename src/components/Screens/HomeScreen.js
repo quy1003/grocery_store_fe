@@ -1,8 +1,3 @@
-import BaseScreen from "@/src/components/BaseScreen";
-import MyInput from "@/src/components/ui/MyInput";
-import OfferCard from "@/src/components/Product/OfferCard";
-import ProductCard from "@/src/components/Product/ProductCard";
-import Tabs from "@/src/components/ui/Tabs";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -13,14 +8,19 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { gql, useQuery } from "@apollo/client";
-import { DatePickerIOSBase } from "react-native";
+import BaseScreen from "@/src/components/BaseScreen";
+import MyInput from "@/src/components/ui/MyInput";
+import Tabs from "@/src/components/ui/Tabs";
+import ProductCard from "@/src/components/Product/ProductCard";
+import OfferCard from "@/src/components/Product/OfferCard";
 import { GET_CATEGORIES } from "@/src/Query/category";
-import { GET_PRODUCT_BY_CATEGORY } from "@/src/Query/product";
+import { IMAGE_URL_DOMAIN, BASE_IMAGE_URL } from "@env";
 
 const GET_PRODUCTS = gql`
   {
     products(search: "") {
       items {
+        id
         name
         image {
           url
@@ -41,8 +41,6 @@ const HomeScreen = () => {
     if (data) {
       setTabs(data.category.children);
       setSelectedTab(data.category.children[0]);
-    } else {
-      console.log(data);
     }
   }, [data]);
 
@@ -58,12 +56,14 @@ const HomeScreen = () => {
         <ActivityIndicator size={30} />
       </View>
     );
+
   if (error) return <Text>Error: {error.message}</Text>;
+
   return (
     <BaseScreen
       title="Welcome"
       subtitle="Find and order your fresh fruits & vegetables"
-      backScreenName={'Welcome'}
+      backScreenName={"Welcome"}
     >
       <View style={styles.container}>
         <MyInput placeholder={"Search fresh fruits & vegetables..."} />
@@ -74,21 +74,26 @@ const HomeScreen = () => {
           showsHorizontalScrollIndicator={false}
         >
           {cateProducts &&
-            cateProducts.map((p) => (
-              <View style={styles.card} key={p.id}>
-                <ProductCard
-                  imgUrl={"https://cdn.tgdd.vn/2020/08/content/1-800x814-1.jpg"}
-                  name={p.name}
-                  price={p.price_range.minimum_price.final_price}
-                  sku={p.sku}
-                />
-              </View>
-            ))}
+            cateProducts.map((product) => {
+              const imageUrl = product.image?.url
+                ? product.image.url.replace(BASE_IMAGE_URL, IMAGE_URL_DOMAIN)
+                : "https://cdn.tgdd.vn/2020/08/content/1-800x814-1.jpg";
+              return (
+                <View style={styles.card} key={product.id}>
+                  <ProductCard
+                    imgUrl={imageUrl}
+                    name={product.name}
+                    price={product.price_range.minimum_price.final_price.value}
+                    sku={product.sku}
+                  />
+                </View>
+              );
+            })}
         </ScrollView>
         <TouchableOpacity title="See All" style={styles.allBtn}>
           <Text style={styles.textBtn}>See All</Text>
         </TouchableOpacity>
-        <Text style={styles.textOffer}>Todays Offers {DatePickerIOSBase}</Text>
+        <Text style={styles.textOffer}>Todays Offers</Text>
         <View style={styles.offerContainer}>
           <OfferCard />
           <OfferCard />
@@ -108,7 +113,6 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flex: 1,
-    // backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "space-between",
     padding: 24,

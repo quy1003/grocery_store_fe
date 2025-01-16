@@ -50,11 +50,11 @@ export default function ProductDetailsScreen({ route, navigation }) {
       setProduct(data.products.items[0]);
       setFinalTotal(
         count *
-          data.products.items[0].price_range.minimum_price.final_price.value
+          data.products.items[0].price_range.minimum_price.final_price.value,
       );
       setRegularTotal(
         count *
-          data.products.items[0].price_range.minimum_price.regular_price.value
+          data.products.items[0].price_range.minimum_price.regular_price.value,
       );
     }
   }, [data]);
@@ -62,7 +62,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
   useEffect(() => {
     if (wishlistData?.customer?.wishlist?.items) {
       const wishlistItem = wishlistData.customer.wishlist.items.find(
-        (item) => item.product.sku === sku
+        (item) => item.product.sku === sku,
       );
       setIsFavorite(!!wishlistItem);
       if (wishlistItem) {
@@ -87,7 +87,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
         if (data?.addProductsToWishlist?.wishlist) {
           setIsFavorite(true);
           const newItem = data.addProductsToWishlist.wishlist.items.find(
-            (item) => item.product.sku === sku
+            (item) => item.product.sku === sku,
           );
           if (newItem) {
             setWishlistItemId(newItem.id);
@@ -190,10 +190,10 @@ export default function ProductDetailsScreen({ route, navigation }) {
     setCount(count + inc);
 
     setFinalTotal(
-      (count + inc) * product.price_range.minimum_price.final_price.value
+      (count + inc) * product.price_range.minimum_price.final_price.value,
     );
     setRegularTotal(
-      (count + inc) * product.price_range.minimum_price.regular_price.value
+      (count + inc) * product.price_range.minimum_price.regular_price.value,
     );
   };
 
