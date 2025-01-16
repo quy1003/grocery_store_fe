@@ -13,10 +13,9 @@ import BaseStyles from "../styles/BaseStyles";
 const BaseScreen = ({
   children,
   title,
-  subtitle,
-  leftSubtitle,
+  subtitle = "",
+  rightSubtitle = "",
   backScreenName,
-  backPress = () => {},
   topRightPress = () => {},
   topRightPressText,
   rightComponent,
@@ -26,6 +25,8 @@ const BaseScreen = ({
   const handleBackPress = () => {
     if (backScreenName) {
       navigation.navigate(backScreenName);
+    } else {
+      navigation.goBack(null);
     }
   };
   return (
@@ -34,10 +35,13 @@ const BaseScreen = ({
       <ScrollView contentContainerStyle={BaseStyles.contentContainer}>
         <View style={BaseStyles.header}>
           <View style={BaseStyles.headerTop}>
-            <TouchableOpacity onPress={handleBackPress}>
+            <TouchableOpacity
+              style={BaseStyles.backBtn}
+              onPress={handleBackPress}
+            >
               <Icon
-                name="chevron-left"
-                size={24}
+                name="angle-left"
+                size={32}
                 fontWeight={"100"}
                 color="#fff"
               />
@@ -51,10 +55,14 @@ const BaseScreen = ({
             )}
           </View>
           <Text style={BaseStyles.headerTitle}>{title}</Text>
-          <View style={BaseStyles.subtitleContainer}>
-            <Text style={BaseStyles.headerSubTitle}>{subtitle}</Text>
-            <Text style={BaseStyles.headerSubTitleLeft}>{leftSubtitle}</Text>
-          </View>
+          {(subtitle != "" || rightSubtitle != "") && (
+            <View style={BaseStyles.subtitleContainer}>
+              <Text style={BaseStyles.headerSubTitle}>{subtitle}</Text>
+              <Text style={BaseStyles.headerSubTitleRight}>
+                {rightSubtitle}
+              </Text>
+            </View>
+          )}
         </View>
 
         <View style={BaseStyles.content}>{children}</View>

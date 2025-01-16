@@ -56,6 +56,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
         count *
           data.products.items[0].price_range.minimum_price.regular_price.value,
       );
+      console.log(data.products.items);
     }
   }, [data]);
 
@@ -206,7 +207,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
       ) : (
         <BaseScreen
           title={product?.name}
-          leftSubtitle={
+          rightSubtitle={
             product?.stock_status == "IN_STOCK"
               ? "•   In stock"
               : "•   Out of stock"
