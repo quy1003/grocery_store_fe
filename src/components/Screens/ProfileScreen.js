@@ -5,17 +5,16 @@ import {
   AvatarFallbackText,
   AvatarImage,
 } from "@/components/ui/avatar";
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
+import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
-import { Text } from "@/components/ui/text";
 import BaseScreen from "@/src/components/BaseScreen";
 import ProfileStyles from "@/src/styles/ProfileStyles";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useContext, useState } from "react";
 import { Alert, TouchableOpacity, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { gql, useMutation } from "@apollo/client";
-import Toast from "react-native-toast-message"; // Import Toast from react-native-toast-message
+import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UPDATE_CUSTOMER = gql`
   mutation UpdateCustomer(
@@ -43,15 +42,9 @@ const ProfileScreen = ({ navigation }) => {
   const [role, setRole] = useState(user ? user._j.__typename : "NaN");
 
   const [updateCustomer] = useMutation(UPDATE_CUSTOMER);
-
   const handleLogout = async () => {
     try {
       dispatch({ type: "LOGOUT" });
-
-      Toast.show({
-        type: "success",
-        text1: "Logout successfully!",
-      });
       navigation.replace("Login");
     } catch (error) {
       console.info("Error:", error);
@@ -60,18 +53,19 @@ const ProfileScreen = ({ navigation }) => {
 
   const handleSave = async () => {
     try {
-      await updateCustomer({
+      const { data } = await updateCustomer({
         variables: {
           firstname,
           lastname,
           email,
         },
       });
-
-      Toast.show({
-        type: "success",
-        text: "Profile updated successfully!",
-      });
+      console.log("Data:", data);
+      if (data && data.updateCustomer && data.updateCustomer.customer) {
+        const updatedUser = data.updateCustomer.customer;
+        dispatch({ type: "LOGIN", payload: updatedUser });
+        await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+      }
     } catch (error) {
       console.error("Error updating profile:", error);
     }
@@ -91,7 +85,6 @@ const ProfileScreen = ({ navigation }) => {
           width={140}
           height={140}
         />
-
         <AvatarBadge />
       </Avatar>
       <View style={ProfileStyles.infoView}>
@@ -153,7 +146,6 @@ const ProfileScreen = ({ navigation }) => {
         </TouchableOpacity>
       </Button>
       <View style={{ height: "33%" }}></View>
-      <Toast ref={(ref) => Toast.setRef(ref)} /> {/* Add Toast reference */}
     </BaseScreen>
   );
 };
