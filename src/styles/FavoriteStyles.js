@@ -155,6 +155,7 @@ export default StyleSheet.create({
     backgroundColor: "#ff4444",
     borderRadius: 5,
     alignItems: "center",
+    justifyContent: "center",
   },
   deleteButtonText: {
     color: "white",

@@ -21,6 +21,7 @@ import {
 } from "react-native-gesture-handler";
 import FavoriteStyles from "@/src/styles/FavoriteStyles";
 import BaseScreen from "../BaseScreen";
+import CustomModal from "@/src/mutuals/CustomModal";
 
 const WISHLIST_STORAGE_KEY = "@wishlist_items";
 
@@ -125,12 +126,14 @@ const FavoriteScreen = ({ navigation }) => {
 
   const renderRightActions = (itemId) => {
     return (
-      <TouchableOpacity
-        style={FavoriteStyles.deleteButton}
-        onPress={() => showDeleteConfirmation(itemId)}
-      >
-        <Ionicons name="trash-outline" size={24} color="#fff" />
-      </TouchableOpacity>
+      <View style={{ width: "25%" }}>
+        <TouchableOpacity
+          style={FavoriteStyles.deleteButton}
+          onPress={() => showDeleteConfirmation(itemId)}
+        >
+          <Ionicons name="trash-outline" size={24} color="#fff" />
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -213,37 +216,13 @@ const FavoriteScreen = ({ navigation }) => {
           />
         )}
 
-        <Modal
-          visible={isModalVisible}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={FavoriteStyles.modalOverlay}>
-            <View style={FavoriteStyles.modalContainer}>
-              <Text style={FavoriteStyles.modalTitle}>
-                Remove from Favorites
-              </Text>
-              <Text style={FavoriteStyles.modalMessage}>
-                Are you sure you want to remove this item from your favorites?
-              </Text>
-              <View style={FavoriteStyles.modalButtons}>
-                <TouchableOpacity
-                  style={FavoriteStyles.cancelButton}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={FavoriteStyles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={FavoriteStyles.deleteButton}
-                  onPress={handleDeleteItem}
-                >
-                  <Text style={FavoriteStyles.deleteButtonText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
+        <CustomModal
+          isVisible={isModalVisible}
+          title="Remove from Favorites"
+          message="Are you sure you want to remove this item from your favorites?"
+          onCancel={() => setModalVisible(false)}
+          onConfirm={handleDeleteItem}
+        />
       </SafeAreaView>
     </GestureHandlerRootView>
   );
