@@ -6,25 +6,74 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import BaseScreen from "@/src/components/BaseScreen";
 import ProfileStyles from "@/src/styles/ProfileStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Alert, TouchableOpacity, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { gql, useMutation } from "@apollo/client";
+import Toast from "react-native-toast-message"; // Import Toast from react-native-toast-message
+
+const UPDATE_CUSTOMER = gql`
+  mutation UpdateCustomer(
+    $firstname: String!
+    $lastname: String!
+    $email: String!
+  ) {
+    updateCustomer(
+      input: { firstname: $firstname, lastname: $lastname, email: $email }
+    ) {
+      customer {
+        firstname
+        lastname
+        email
+      }
+    }
+  }
+`;
 
 const ProfileScreen = ({ navigation }) => {
   const [user, dispatch] = useContext(UserContext);
+  const [firstname, setFirstname] = useState(user ? user._j.firstname : "NaN");
+  const [lastname, setLastname] = useState(user ? user._j.lastname : "NaN");
+  const [email, setEmail] = useState(user ? user._j.email : "NaN");
+  const [role, setRole] = useState(user ? user._j.__typename : "NaN");
+
+  const [updateCustomer] = useMutation(UPDATE_CUSTOMER);
+
   const handleLogout = async () => {
     try {
       dispatch({ type: "LOGOUT" });
 
-      Alert.alert("Logout successfully!", "You just exited our application");
+      Toast.show({
+        type: "success",
+        text1: "Logout successfully!",
+      });
       navigation.replace("Login");
     } catch (error) {
       console.info("Error:", error);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      await updateCustomer({
+        variables: {
+          firstname,
+          lastname,
+          email,
+        },
+      });
+
+      Toast.show({
+        type: "success",
+        text: "Profile updated successfully!",
+      });
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
   };
 
@@ -32,7 +81,7 @@ const ProfileScreen = ({ navigation }) => {
     <BaseScreen title="User Profile" subtitle="">
       <Avatar
         size="2xl"
-        style={{ flex: 1, alignItems: "center", marginTop: "-20%" }}
+        style={{ flex: 1, alignItems: "center", marginTop: "-20%", zIndex: 10 }}
       >
         <AvatarImage
           source={{
@@ -42,31 +91,54 @@ const ProfileScreen = ({ navigation }) => {
           width={140}
           height={140}
         />
-        <AvatarFallbackText style={{ textAlign: "center", padding: 10 }}>
-          {user ? user._j.firstname : "Nothing"}
-        </AvatarFallbackText>
+
         <AvatarBadge />
       </Avatar>
       <View style={ProfileStyles.infoView}>
-        <View style={ProfileStyles.textViewUser}>
-          <Text style={ProfileStyles.fontSize20}>
-            Username:{" "}
-            {user
-              ? user._j.firstname + " " + user._j.lastname
-              : "Nothing to show"}
-          </Text>
-        </View>
-        <View style={ProfileStyles.textViewUser}>
-          <Text style={ProfileStyles.fontSize20}>
-            Email: {user ? user._j.email : "Nothing to show"}
-          </Text>
-        </View>
-        <View style={ProfileStyles.textViewUser}>
-          <Text style={ProfileStyles.fontSize20}>
-            Role: {user ? user._j.__typename : "Nothing to show"}
-          </Text>
-        </View>
+        <Input style={ProfileStyles.textViewUser}>
+          <InputField
+            style={ProfileStyles.fontSize20}
+            value={firstname}
+            onChangeText={setFirstname}
+            placeholder="First Name"
+          />
+        </Input>
+
+        <Input style={ProfileStyles.textViewUser}>
+          <InputField
+            style={ProfileStyles.fontSize20}
+            value={lastname}
+            onChangeText={setLastname}
+            placeholder="Last Name"
+          />
+        </Input>
+        <Input style={ProfileStyles.textViewUser}>
+          <InputField
+            style={ProfileStyles.fontSize20}
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+          />
+        </Input>
+        <Input isDisabled={true} style={ProfileStyles.textViewUser}>
+          <InputField
+            style={ProfileStyles.fontSize20}
+            value={role}
+            onChangeText={setRole}
+            placeholder="Role"
+          />
+        </Input>
       </View>
+      <Button
+        size="lg"
+        variant="solid"
+        action="positive"
+        style={ProfileStyles.btnLogout}
+      >
+        <TouchableOpacity onPress={handleSave}>
+          <ButtonText style={ProfileStyles.btnSaveText}>Save</ButtonText>
+        </TouchableOpacity>
+      </Button>
       <Button
         size="lg"
         variant="solid"
@@ -81,6 +153,7 @@ const ProfileScreen = ({ navigation }) => {
         </TouchableOpacity>
       </Button>
       <View style={{ height: "33%" }}></View>
+      <Toast ref={(ref) => Toast.setRef(ref)} /> {/* Add Toast reference */}
     </BaseScreen>
   );
 };

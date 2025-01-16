@@ -58,7 +58,7 @@ const HomeScreen = () => {
     );
 
   if (error) return <Text>Error: {error.message}</Text>;
-
+  console.log("Check env: ", IMAGE_URL_DOMAIN);
   return (
     <BaseScreen
       title="Welcome"
@@ -76,8 +76,11 @@ const HomeScreen = () => {
           {cateProducts &&
             cateProducts.map((product) => {
               const imageUrl = product.image?.url
-                ? product.image.url.replace(BASE_IMAGE_URL, IMAGE_URL_DOMAIN)
+                ? product.image.url
+                    .toString()
+                    .replace(BASE_IMAGE_URL, IMAGE_URL_DOMAIN)
                 : "https://cdn.tgdd.vn/2020/08/content/1-800x814-1.jpg";
+              console.log(IMAGE_URL_DOMAIN);
               return (
                 <View style={styles.card} key={product.id}>
                   <ProductCard

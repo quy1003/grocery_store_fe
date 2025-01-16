@@ -196,10 +196,9 @@ const FavoriteScreen = ({ navigation }) => {
   const renderItem = ({ item }) => {
     const product = item.product;
     const price = product.price_range.minimum_price.regular_price.value;
-    const fixedImageUrl = product.small_image.url.replace(
-      BASE_IMAGE_URL,
-      IMAGE_URL_DOMAIN,
-    );
+    const fixedImageUrl = product.small_image.url
+      .toString()
+      .replace(BASE_IMAGE_URL, IMAGE_URL_DOMAIN);
 
     return (
       <Swipeable
