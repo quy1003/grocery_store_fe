@@ -32,7 +32,7 @@ const CategoryScreen = ({ route, navigation }) => {
 
   const handlePress = (sku) => {
     console.log(sku);
-    navigation.navigate("ProductDetail", { sku });
+    navigation.navigate("ProductDetails", { sku });
   };
 
   if (loading)

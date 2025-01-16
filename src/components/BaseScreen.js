@@ -32,10 +32,13 @@ const BaseScreen = ({
   return (
     <View style={BaseStyles.container}>
       <StatusBar backgroundColor="#56995d" barStyle="light-content" />
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        <View style={styles.header}>
-          <View style={styles.headerTop}>
-            <TouchableOpacity style={styles.backBtn} onPress={handleBackPress}>
+      <ScrollView contentContainerStyle={BaseStyles.contentContainer}>
+        <View style={BaseStyles.header}>
+          <View style={BaseStyles.headerTop}>
+            <TouchableOpacity
+              style={BaseStyles.backBtn}
+              onPress={handleBackPress}
+            >
               <Icon
                 name="angle-left"
                 size={32}
@@ -51,11 +54,13 @@ const BaseScreen = ({
               </TouchableOpacity>
             )}
           </View>
-          <Text style={styles.headerTitle}>{title}</Text>
+          <Text style={BaseStyles.headerTitle}>{title}</Text>
           {(subtitle != "" || rightSubtitle != "") && (
-            <View style={styles.subtitleContainer}>
-              <Text style={styles.headerSubTitle}>{subtitle}</Text>
-              <Text style={styles.headerSubTitleRight}>{rightSubtitle}</Text>
+            <View style={BaseStyles.subtitleContainer}>
+              <Text style={BaseStyles.headerSubTitle}>{subtitle}</Text>
+              <Text style={BaseStyles.headerSubTitleRight}>
+                {rightSubtitle}
+              </Text>
             </View>
           )}
         </View>

@@ -55,7 +55,7 @@ export default function App() {
                 options={{ headerShown: false }}
               />
               <Stack.Screen
-                name="ProductDetail"
+                name="ProductDetails"
                 component={ProductDetailsScreen}
                 options={{ headerShown: false }}
               />

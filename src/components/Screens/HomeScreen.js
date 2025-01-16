@@ -18,24 +18,15 @@ import { IMAGE_URL_DOMAIN, BASE_IMAGE_URL } from "@env";
 import { GET_PRODUCT_BY_CATEGORY } from "@/src/Query/product";
 import { useNavigation } from "@react-navigation/native";
 
-const GET_PRODUCTS = gql`
-  {
-    products(search: "") {
-      items {
-        id
-        name
-        image {
-          url
-        }
-      }
-    }
-  }
-`;
-
 const HomeScreen = () => {
   const [tabs, setTabs] = useState([]);
   const [selectedTab, setSelectedTab] = useState();
   const [cateProducts, setCateProducts] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  const [searchResultCategory, setSearchResultCategory] = useState([]);
+  const [searchResultProduct, setSearchResultProduct] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const navigation = useNavigation();
   const { loading, error, data } = useQuery(GET_CATEGORIES);
 
@@ -47,6 +38,14 @@ const HomeScreen = () => {
     if (data) {
       setTabs(data.category.children);
       setSelectedTab(data.category.children[0]);
+      let arr = [];
+      data.category.children.forEach((element) => {
+        console.log(element.products.items.length);
+        arr = arr.concat(element.products.items);
+      });
+      setAllProducts(arr);
+    } else {
+      console.log(data);
     }
   }, [data]);
 
@@ -55,6 +54,82 @@ const HomeScreen = () => {
       setCateProducts(selectedTab.products.items);
     }
   }, [selectedTab]);
+
+  useEffect(() => {
+    if (keyword.length >= 2) {
+      console.log(keyword);
+      setSearchResultCategory(
+        tabs.filter((category) => category.name.includes(keyword))
+      );
+      setSearchResultProduct(
+        allProducts.filter((product) => {
+          console.log(product.name);
+          return product.name.includes(keyword);
+        })
+      );
+    } else {
+      setSearchResultCategory([]);
+      setSearchResultProduct([]);
+    }
+  }, [keyword]);
+
+  const renderSearchResults = () => {
+    if (keyword.length < 2) return null;
+
+    return (
+      <View style={styles.searchResults}>
+        {/* Categories Section */}
+        {searchResultCategory.length > 0 && (
+          <View style={styles.resultSection}>
+            <Text style={styles.resultSectionTitle}>Categories</Text>
+            {searchResultCategory.map((category) => (
+              <TouchableOpacity
+                key={category.id}
+                style={styles.resultItem}
+                onPress={() => {
+                  navigation.navigate("CategoryScreen", { id: category.id });
+                  setKeyword("");
+                  setShowSearchResults(false);
+                }}
+              >
+                <Text style={styles.resultItemText}>{category.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        {/* Products Section */}
+        {searchResultProduct.length > 0 && (
+          <View style={styles.resultSection}>
+            <Text style={styles.resultSectionTitle}>Products</Text>
+            {searchResultProduct.map((product) => (
+              <TouchableOpacity
+                key={product.id}
+                style={styles.resultItem}
+                onPress={() => {
+                  navigation.navigate("ProductDetails", {
+                    sku: product.sku,
+                  });
+                  setKeyword("");
+                  setShowSearchResults(false);
+                }}
+              >
+                <Text style={styles.resultItemText}>{product.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        {/* No Results Message */}
+        {searchResultCategory.length === 0 &&
+          searchResultProduct.length === 0 && (
+            <View style={styles.noResults}>
+              <Text style={styles.noResultsText}>No results found</Text>
+            </View>
+          )}
+      </View>
+    );
+  };
 
   if (loading)
     return (
@@ -71,7 +146,17 @@ const HomeScreen = () => {
       backScreenName={"Welcome"}
     >
       <View style={styles.container}>
-        <MyInput placeholder={"Search fresh fruits & vegetables..."} />
+        <View style={styles.searchContainer}>
+          <MyInput
+            placeholder={"Search fresh fruits & vegetables..."}
+            value={keyword}
+            onChange={(text) => {
+              setKeyword(text);
+              setShowSearchResults(true);
+            }}
+          />
+          {showSearchResults && renderSearchResults()}
+        </View>
         <Tabs tabs={tabs} activeTab={selectedTab} onPress={setSelectedTab} />
         <ScrollView
           horizontal
@@ -161,5 +246,56 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     paddingVertical: 10,
+  },
+  searchContainer: {
+    width: "100%",
+    position: "relative",
+    zIndex: 999,
+  },
+  searchResults: {
+    position: "absolute",
+    top: "100%",
+    left: 0,
+    right: 0,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 12,
+    marginTop: 4,
+    maxHeight: 300,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  resultSection: {
+    marginBottom: 16,
+  },
+  resultSectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: "#333",
+  },
+  resultItem: {
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  resultItemText: {
+    fontSize: 14,
+    color: "#666",
+  },
+  noResults: {
+    padding: 16,
+    alignItems: "center",
+  },
+  noResultsText: {
+    color: "#666",
+    fontSize: 14,
   },
 });

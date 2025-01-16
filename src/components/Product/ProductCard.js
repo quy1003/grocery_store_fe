@@ -6,7 +6,7 @@ export default function ProductCard({ imgUrl, name, price, sku }) {
   const navigation = useNavigation();
 
   const handlePress = () => {
-    navigation.navigate("ProductDetail", { sku });
+    navigation.navigate("ProductDetails", { sku });
   };
 
   return (
