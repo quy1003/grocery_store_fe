@@ -25,7 +25,12 @@ export default StyleSheet.create({
     elevation: 5,
     marginTop: 15,
   },
-  btnLogoutText :{ padding: 14,paddingHorizontal:20, textAlign: "left", color: "whitesmoke", fontWeight: 'bold', position:'relative'},
-  
+  btnLogoutText: {
+    padding: 14,
+    paddingHorizontal: 20,
+    textAlign: "left",
+    color: "whitesmoke",
+    fontWeight: "bold",
+    position: "relative",
+  },
 });
-

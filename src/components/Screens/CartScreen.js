@@ -63,7 +63,7 @@ const CartScreen = ({ navigation }) => {
       onError: (error) => {
         console.error("Cart query error:", error);
       },
-    }
+    },
   );
 
   const [updateQuantity] = useMutation(UPDATE_CART_ITEM_QUANTITY);
@@ -144,7 +144,7 @@ const CartScreen = ({ navigation }) => {
     try {
       const currentCart = localCart || data;
       const updatedItems = currentCart.customerCart.items.map((item) =>
-        item.id === itemId ? { ...item, quantity } : item
+        item.id === itemId ? { ...item, quantity } : item,
       );
 
       const updatedCart = {
@@ -178,7 +178,7 @@ const CartScreen = ({ navigation }) => {
     try {
       const currentCart = localCart || data;
       const updatedItems = currentCart.customerCart.items.filter(
-        (item) => item.id !== itemId
+        (item) => item.id !== itemId,
       );
 
       const updatedCart = {
@@ -240,7 +240,7 @@ const CartScreen = ({ navigation }) => {
         options.push(
           <Text key={option.option_label} style={CartStyles.optionText}>
             {option.option_label}: {option.value_label}
-          </Text>
+          </Text>,
         );
       });
     }
@@ -250,7 +250,7 @@ const CartScreen = ({ navigation }) => {
         options.push(
           <Text key={option.label} style={CartStyles.optionText}>
             {option.label}: {option.values[0]?.label}
-          </Text>
+          </Text>,
         );
       });
     }
@@ -263,7 +263,7 @@ const CartScreen = ({ navigation }) => {
   const renderCartItem = (item) => {
     const fixedImageUrl = item.product.image.url.replace(
       BASE_IMAGE_URL,
-      IMAGE_URL_DOMAIN
+      IMAGE_URL_DOMAIN,
     );
 
     return (

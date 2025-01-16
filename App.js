@@ -11,7 +11,7 @@ import DemoComponent from "./src/components/Login/Demo";
 import MyTabs from "./src/components/MyTabs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Welcome from "./src/components/Login/Welcome";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SignUpScreen from "./src/components/Screens/SignUpScreen";
 import ProductDetailsScreen from "@/src/components/Screens/ProductDetailsScreen";
 

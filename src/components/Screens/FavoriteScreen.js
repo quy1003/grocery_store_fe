@@ -19,6 +19,7 @@ import {
 } from "react-native-gesture-handler";
 import FavoriteStyles from "@/src/styles/FavoriteStyles";
 import { ADD_PRODUCT_TO_CART } from "@/src/Query/cart";
+import BaseScreen from "../BaseScreen";
 
 const WISHLIST_STORAGE_KEY = "@wishlist_items";
 
@@ -134,7 +135,7 @@ const FavoriteScreen = ({ navigation }) => {
 
     try {
       const updatedItems = localWishlistItems.filter(
-        (item) => item.id !== itemId
+        (item) => item.id !== itemId,
       );
       setLocalWishlistItems(updatedItems);
       await saveWishlistToStorage(updatedItems);
@@ -177,7 +178,7 @@ const FavoriteScreen = ({ navigation }) => {
           text: "OK",
           onPress: () => handleDeleteItem(itemId),
         },
-      ]
+      ],
     );
   };
 
@@ -197,7 +198,7 @@ const FavoriteScreen = ({ navigation }) => {
     const price = product.price_range.minimum_price.regular_price.value;
     const fixedImageUrl = product.small_image.url.replace(
       BASE_IMAGE_URL,
-      IMAGE_URL_DOMAIN
+      IMAGE_URL_DOMAIN,
     );
 
     return (
