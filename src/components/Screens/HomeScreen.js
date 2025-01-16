@@ -15,6 +15,8 @@ import ProductCard from "@/src/components/Product/ProductCard";
 import OfferCard from "@/src/components/Product/OfferCard";
 import { GET_CATEGORIES } from "@/src/Query/category";
 import { IMAGE_URL_DOMAIN, BASE_IMAGE_URL } from "@env";
+import { GET_PRODUCT_BY_CATEGORY } from "@/src/Query/product";
+import { useNavigation } from "@react-navigation/native";
 
 const GET_PRODUCTS = gql`
   {
@@ -34,8 +36,12 @@ const HomeScreen = () => {
   const [tabs, setTabs] = useState([]);
   const [selectedTab, setSelectedTab] = useState();
   const [cateProducts, setCateProducts] = useState([]);
-
+  const navigation = useNavigation();
   const { loading, error, data } = useQuery(GET_CATEGORIES);
+
+  const handlePress = () => {
+    navigation.navigate("CategoryScreen", { id: selectedTab.id });
+  };
 
   useEffect(() => {
     if (data) {
@@ -91,7 +97,11 @@ const HomeScreen = () => {
               );
             })}
         </ScrollView>
-        <TouchableOpacity title="See All" style={styles.allBtn}>
+        <TouchableOpacity
+          title="See All"
+          style={styles.allBtn}
+          onPress={handlePress}
+        >
           <Text style={styles.textBtn}>See All</Text>
         </TouchableOpacity>
         <Text style={styles.textOffer}>Todays Offers</Text>

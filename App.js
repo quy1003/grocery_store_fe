@@ -14,6 +14,7 @@ import Welcome from "./src/components/Login/Welcome";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SignUpScreen from "./src/components/Screens/SignUpScreen";
 import ProductDetailsScreen from "@/src/components/Screens/ProductDetailsScreen";
+import CategoryScreen from "@/src/components/Screens/CategoryScreen";
 
 export const UserContext = createContext();
 
@@ -56,6 +57,11 @@ export default function App() {
               <Stack.Screen
                 name="ProductDetail"
                 component={ProductDetailsScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="CategoryScreen"
+                component={CategoryScreen}
                 options={{ headerShown: false }}
               />
             </Stack.Navigator>

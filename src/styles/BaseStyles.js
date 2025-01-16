@@ -31,7 +31,7 @@ export default StyleSheet.create({
     fontSize: 19,
     width: "75%",
   },
-  headerSubTitleLeft: {
+  headerSubTitleRight: {
     color: "#fff",
     fontSize: 22,
   },

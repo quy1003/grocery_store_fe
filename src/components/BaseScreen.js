@@ -13,10 +13,9 @@ import BaseStyles from "../styles/BaseStyles";
 const BaseScreen = ({
   children,
   title,
-  subtitle,
-  leftSubtitle,
+  subtitle = "",
+  rightSubtitle = "",
   backScreenName,
-  backPress = () => {},
   topRightPress = () => {},
   topRightPressText,
   rightComponent,
@@ -26,18 +25,20 @@ const BaseScreen = ({
   const handleBackPress = () => {
     if (backScreenName) {
       navigation.navigate(backScreenName);
+    } else {
+      navigation.goBack(null);
     }
   };
   return (
     <View style={BaseStyles.container}>
       <StatusBar backgroundColor="#56995d" barStyle="light-content" />
-      <ScrollView contentContainerStyle={BaseStyles.contentContainer}>
-        <View style={BaseStyles.header}>
-          <View style={BaseStyles.headerTop}>
-            <TouchableOpacity onPress={handleBackPress}>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <View style={styles.header}>
+          <View style={styles.headerTop}>
+            <TouchableOpacity style={styles.backBtn} onPress={handleBackPress}>
               <Icon
-                name="chevron-left"
-                size={24}
+                name="angle-left"
+                size={32}
                 fontWeight={"100"}
                 color="#fff"
               />
@@ -50,11 +51,13 @@ const BaseScreen = ({
               </TouchableOpacity>
             )}
           </View>
-          <Text style={BaseStyles.headerTitle}>{title}</Text>
-          <View style={BaseStyles.subtitleContainer}>
-            <Text style={BaseStyles.headerSubTitle}>{subtitle}</Text>
-            <Text style={BaseStyles.headerSubTitleLeft}>{leftSubtitle}</Text>
-          </View>
+          <Text style={styles.headerTitle}>{title}</Text>
+          {(subtitle != "" || rightSubtitle != "") && (
+            <View style={styles.subtitleContainer}>
+              <Text style={styles.headerSubTitle}>{subtitle}</Text>
+              <Text style={styles.headerSubTitleRight}>{rightSubtitle}</Text>
+            </View>
+          )}
         </View>
 
         <View style={BaseStyles.content}>{children}</View>

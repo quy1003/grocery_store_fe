@@ -10,6 +10,7 @@ import ProductDetailsScreen from "@/src/components/Screens/ProductDetailsScreen"
 import { useContext, useEffect, useReducer } from "react";
 import { UserContext } from "@/App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CategoryScreen from "@/src/components/Screens/CategoryScreen";
 const Tab = createBottomTabNavigator();
 
 export default function MyTabs({ navigation, route }) {
@@ -51,7 +52,7 @@ export default function MyTabs({ navigation, route }) {
       />
       <Tab.Screen
         name="Test"
-        component={ProductDetailsScreen}
+        component={CategoryScreen}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (

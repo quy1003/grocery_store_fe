@@ -1,21 +1,15 @@
 import { gql } from "@apollo/client";
 
 export const GET_PRODUCT_BY_CATEGORY = gql`
-  query {
-    category(id: 2) {
-      id
-      name
-      children {
+  query GetCategories($categoryId: String!) {
+    categories(filters: { ids: { eq: $categoryId } }) {
+      items {
         id
         name
         products {
           items {
             id
             name
-            sku
-            image {
-              url
-            }
             price_range {
               minimum_price {
                 regular_price {
@@ -28,6 +22,10 @@ export const GET_PRODUCT_BY_CATEGORY = gql`
                 }
               }
             }
+            image {
+              url
+            }
+            sku
           }
         }
       }
