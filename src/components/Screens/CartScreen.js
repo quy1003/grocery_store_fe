@@ -23,6 +23,7 @@ import {
 import { useQuery, useMutation } from "@apollo/client";
 import CartStyles from "@/src/styles/CartStyles";
 import { IMAGE_URL_DOMAIN, BASE_IMAGE_URL } from "@env";
+import { useFocusEffect } from "@react-navigation/native";
 
 const CART_CACHE_KEY = "cart_data_cache";
 const CART_CACHE_TIMESTAMP = "cart_cache_timestamp";
@@ -53,18 +54,28 @@ const EmptyCart = ({ onShopNow }) => {
 const CartScreen = ({ navigation }) => {
   const [localCart, setLocalCart] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const { loading, error, data, startPolling, stopPolling, refetch } = useQuery(
-    GET_CUSTOMER_CART,
-    {
-      fetchPolicy: "network-only",
-      nextFetchPolicy: "cache-and-network",
-      notifyOnNetworkStatusChange: true,
-      onError: (error) => {
-        console.error("Cart query error:", error);
-      },
+  // const { loading, error, data, startPolling, stopPolling, refetch } = useQuery(
+  //   GET_CUSTOMER_CART,
+  //   {
+  //     fetchPolicy: "network-only",
+  //     nextFetchPolicy: "cache-and-network",
+  //     notifyOnNetworkStatusChange: true,
+  //     onError: (error) => {
+  //       console.error("Cart query error:", error);
+  //     },
+  //   },
+  // );
+
+  const { loading, error, data, refetch } = useQuery(GET_CUSTOMER_CART, {
+    fetchPolicy: "network-only",
+    nextFetchPolicy: "cache-and-network",
+    notifyOnNetworkStatusChange: true,
+    onError: (error) => {
+      console.error("Cart query error:", error);
     },
-  );
+  });
 
   const [updateQuantity] = useMutation(UPDATE_CART_ITEM_QUANTITY);
   const [removeItem] = useMutation(REMOVE_ITEM_FROM_CART);
@@ -112,28 +123,49 @@ const CartScreen = ({ navigation }) => {
     navigation.navigate("Home");
   };
 
-  useEffect(() => {
-    const initializeCart = async () => {
-      await loadCachedCart();
-      try {
-        const result = await refetch();
-        if (result.data) {
-          await updateCartCache(result.data);
-          setLocalCart(result.data);
-          setTotalAmount(calculateTotal(result.data?.customerCart?.items));
+  // useEffect(() => {
+  //   const initializeCart = async () => {
+  //     await loadCachedCart();
+  //     try {
+  //       const result = await refetch();
+  //       if (result.data) {
+  //         await updateCartCache(result.data);
+  //         setLocalCart(result.data);
+  //         setTotalAmount(calculateTotal(result.data?.customerCart?.items));
+  //       }
+  //     } catch (err) {
+  //       console.error("Refetch error:", err);
+  //     }
+  //   };
+
+  //   initializeCart();
+  //   startPolling(30000);
+
+  //   return () => {
+  //     stopPolling();
+  //   };
+  // }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const refreshCart = async () => {
+        setIsRefreshing(true);
+        try {
+          const result = await refetch();
+          if (result.data) {
+            await updateCartCache(result.data);
+            setLocalCart(result.data);
+            setTotalAmount(calculateTotal(result.data?.customerCart?.items));
+          }
+        } catch (err) {
+          console.error("Refetch error:", err);
+        } finally {
+          setIsRefreshing(false);
         }
-      } catch (err) {
-        console.error("Refetch error:", err);
-      }
-    };
+      };
 
-    initializeCart();
-    startPolling(30000);
-
-    return () => {
-      stopPolling();
-    };
-  }, []);
+      refreshCart();
+    }, []),
+  );
 
   const handleQuantityChange = async (itemId, quantity) => {
     if (quantity === 0) {
@@ -306,7 +338,17 @@ const CartScreen = ({ navigation }) => {
   const cartData = localCart || data;
   const cartItems = cartData?.customerCart?.items || [];
 
-  if (loading && !cartData) {
+  // if (loading && !cartData) {
+  //   return (
+  //     <SafeAreaView style={CartStyles.container}>
+  //       <View style={CartStyles.loadingContainer}>
+  //         <Text>Loading cart...</Text>
+  //       </View>
+  //     </SafeAreaView>
+  //   );
+  // }
+
+  if ((loading || isRefreshing) && !localCart) {
     return (
       <SafeAreaView style={CartStyles.container}>
         <View style={CartStyles.loadingContainer}>
