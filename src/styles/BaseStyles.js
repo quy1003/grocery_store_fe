@@ -41,8 +41,10 @@ export default StyleSheet.create({
   },
   content: {
     flex: 1,
-    borderRadius: 20,
+    borderTopStartRadius: 20,
+    borderTopEndRadius: 20,
     marginTop: -60,
     backgroundColor: "#f5f5f5",
+    minHeight: 60,
   },
 });

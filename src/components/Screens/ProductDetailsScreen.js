@@ -16,6 +16,7 @@ import { Slider } from "@rneui/themed";
 import { GET_PRODUCT_BY_SKU } from "@/src/Query/product";
 import { useQuery, useMutation } from "@apollo/client";
 import { CREATE_CART, ADD_PRODUCT_TO_CART } from "@/src/Query/cart";
+import { IMAGE_URL_DOMAIN, BASE_IMAGE_URL } from "@env";
 import {
   REMOVE_FROM_WISHLIST,
   GET_WISHLIST,
@@ -33,6 +34,10 @@ export default function ProductDetailsScreen({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [wishlistItemId, setWishlistItemId] = useState(null);
+
+  // useEffect(() => {
+  //   console.log(product.small_image.url);
+  // }, [product]);
 
   const { loading, error, data } = useQuery(GET_PRODUCT_BY_SKU, {
     variables: { sku },
@@ -56,7 +61,6 @@ export default function ProductDetailsScreen({ route, navigation }) {
         count *
           data.products.items[0].price_range.minimum_price.regular_price.value,
       );
-      console.log(data.products.items);
     }
   }, [data]);
 
@@ -231,7 +235,9 @@ export default function ProductDetailsScreen({ route, navigation }) {
             <View style={ProductDetailsStyle.productInfo}>
               <Image
                 source={{
-                  uri: "https://cdn.tgdd.vn/Products/Images/8788/226930/bhx/dua-hau-do-202402271437411608.jpg",
+                  uri: product?.small_image?.url
+                    .toString()
+                    .replace(BASE_IMAGE_URL, IMAGE_URL_DOMAIN),
                 }}
                 style={ProductDetailsStyle.img}
               />
