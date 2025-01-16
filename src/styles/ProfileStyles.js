@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   infoView: {
+    marginTop: -60,
     backgroundColor: "#fff",
     borderRadius: 20,
     padding: 20,
@@ -11,7 +12,10 @@ export default StyleSheet.create({
     shadowRadius: 6,
     elevation: 5,
   },
-  textViewUser: { padding: 10, marginBottom: 1 },
+  textViewUser: {
+    padding: 5,
+    marginBottom: 1,
+  },
   fontSize20: { fontSize: 20 },
   btnLogout: {
     backgroundColor: "#E63535",
@@ -32,5 +36,13 @@ export default StyleSheet.create({
     color: "whitesmoke",
     fontWeight: "bold",
     position: "relative",
+  },
+  btnSaveText: {
+    padding: 14.5,
+    textAlign: "center",
+    color: "white",
+    backgroundColor: "#56995d",
+    fontWeight: "bold",
+    borderRadius: 18,
   },
 });

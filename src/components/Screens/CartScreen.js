@@ -261,10 +261,9 @@ const CartScreen = ({ navigation }) => {
   };
 
   const renderCartItem = (item) => {
-    const fixedImageUrl = item.product.image.url.replace(
-      BASE_IMAGE_URL,
-      IMAGE_URL_DOMAIN,
-    );
+    const fixedImageUrl = item.product.image.url
+      .toString()
+      .replace(BASE_IMAGE_URL, IMAGE_URL_DOMAIN);
 
     return (
       <Swipeable
