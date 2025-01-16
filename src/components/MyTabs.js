@@ -50,7 +50,7 @@ export default function MyTabs({ navigation, route }) {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Test"
         component={CategoryScreen}
         options={{
@@ -63,7 +63,7 @@ export default function MyTabs({ navigation, route }) {
             />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Cart"
         component={CartScreen}

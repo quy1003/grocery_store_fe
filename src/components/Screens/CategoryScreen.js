@@ -11,6 +11,7 @@ import {
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCT_BY_CATEGORY } from "@/src/Query/product";
 import BaseScreen from "@/src/components/BaseScreen";
+import { IMAGE_URL_DOMAIN, BASE_IMAGE_URL } from "@env";
 
 const CategoryScreen = ({ route, navigation }) => {
   const { id } = route.params;
@@ -93,7 +94,11 @@ const CategoryScreen = ({ route, navigation }) => {
             >
               <Image
                 source={{
-                  uri: "https://cdn.tgdd.vn/Products/Images/8788/223036/bhx/quyt-mini-tui-500g-202201211139151317.jpg",
+                  uri: item.image?.url
+                    ? item.image.url
+                        .toString()
+                        .replace(BASE_IMAGE_URL, IMAGE_URL_DOMAIN)
+                    : "https://cdn.tgdd.vn/2020/08/content/1-800x814-1.jpg",
                 }}
                 style={styles.productImage}
                 resizeMode="cover"
@@ -104,7 +109,7 @@ const CategoryScreen = ({ route, navigation }) => {
                   <Text style={styles.finalPrice}>
                     $
                     {item.price_range.minimum_price.final_price.value.toFixed(
-                      2
+                      2,
                     )}
                   </Text>
                   {/* <Text style={styles.regularPrice}>

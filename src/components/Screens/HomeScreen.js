@@ -59,13 +59,13 @@ const HomeScreen = () => {
     if (keyword.length >= 2) {
       console.log(keyword);
       setSearchResultCategory(
-        tabs.filter((category) => category.name.includes(keyword))
+        tabs.filter((category) => category.name.includes(keyword)),
       );
       setSearchResultProduct(
         allProducts.filter((product) => {
           console.log(product.name);
           return product.name.includes(keyword);
-        })
+        }),
       );
     } else {
       setSearchResultCategory([]);
@@ -175,7 +175,7 @@ const HomeScreen = () => {
                   <ProductCard
                     imgUrl={imageUrl}
                     name={product.name}
-                    price={product.price_range.minimum_price.final_price.value}
+                    price={product.price_range.minimum_price.final_price}
                     sku={product.sku}
                   />
                 </View>
