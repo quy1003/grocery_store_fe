@@ -23,6 +23,8 @@ import {
   ADD_TO_WISHLIST,
 } from "@/src/Query/favorite";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomModal from "@/src/mutuals/CustomModal";
+import CustomNotification from "@/src/mutuals/CustomNotification";
 
 export default function ProductDetailsScreen({ route, navigation }) {
   const { sku } = route.params;
@@ -49,7 +51,8 @@ export default function ProductDetailsScreen({ route, navigation }) {
   const [addToCart] = useMutation(ADD_PRODUCT_TO_CART);
   const [addToWishlist] = useMutation(ADD_TO_WISHLIST);
   const [removeFromWishlist] = useMutation(REMOVE_FROM_WISHLIST);
-
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [message, setMessage] = useState("");
   useEffect(() => {
     if (data) {
       setProduct(data.products.items[0]);
@@ -84,7 +87,8 @@ export default function ProductDetailsScreen({ route, navigation }) {
         });
         setIsFavorite(false);
         setWishlistItemId(null);
-        Alert.alert("Success", "Product removed from wishlist");
+        setMessage("Product has removed from wishlist");
+        setModalVisible(true);
       } else {
         const { data } = await addToWishlist({
           variables: { sku },
@@ -97,7 +101,8 @@ export default function ProductDetailsScreen({ route, navigation }) {
           if (newItem) {
             setWishlistItemId(newItem.id);
           }
-          Alert.alert("Success", "Product added to wishlist");
+          setMessage("Product has added to wishlist");
+          setModalVisible(true);
         }
       }
       refetchWishlist();
@@ -145,21 +150,12 @@ export default function ProductDetailsScreen({ route, navigation }) {
       });
 
       if (addToCartData?.addSimpleProductsToCart?.cart) {
-        Alert.alert("Success", "Product added to cart successfully", [
-          {
-            text: "Continue Shopping",
-            onPress: () => navigation.goBack(),
-            style: "cancel",
-          },
-          {
-            text: "Go to Cart",
-            onPress: () => navigation.navigate("MyTabs", { screen: "Cart" }),
-          },
-        ]);
+        setMessage("Your product has been added to the cart");
+        setModalVisible(true);
       }
     } catch (error) {
       console.error("Error in handleAddToCart:", error);
-      Alert.alert("Error", "Failed to add product to cart. Please try again.");
+      setLoad;
     } finally {
       setIsLoading(false);
     }
@@ -346,6 +342,13 @@ export default function ProductDetailsScreen({ route, navigation }) {
               )}
             </TouchableOpacity>
           </View>
+          <CustomNotification
+            isVisible={isModalVisible}
+            title="Notification"
+            message={message}
+            onCancel={() => setModalVisible(false)}
+            // onConfirm={() => {}}
+          />
         </BaseScreen>
       )}
     </>
