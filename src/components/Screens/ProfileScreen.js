@@ -41,7 +41,15 @@ const ProfileScreen = ({ navigation }) => {
   const [email, setEmail] = useState(user ? user._j.email : "NaN");
   const [role, setRole] = useState(user ? user._j.__typename : "NaN");
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [originalState, setOriginalState] = useState({
+    firstname,
+    lastname,
+    email,
+  });
+
   const [updateCustomer] = useMutation(UPDATE_CUSTOMER);
+
   const handleLogout = async () => {
     try {
       dispatch({ type: "LOGOUT" });
@@ -60,15 +68,27 @@ const ProfileScreen = ({ navigation }) => {
           email,
         },
       });
-      console.log("Data:", data);
       if (data && data.updateCustomer && data.updateCustomer.customer) {
         const updatedUser = data.updateCustomer.customer;
         dispatch({ type: "LOGIN", payload: updatedUser });
         await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+        setIsEditing(false);
       }
     } catch (error) {
       console.error("Error updating profile:", error);
     }
+  };
+
+  const handleCancel = () => {
+    setFirstname(originalState.firstname);
+    setLastname(originalState.lastname);
+    setEmail(originalState.email);
+    setIsEditing(false);
+  };
+
+  const handleEdit = () => {
+    setOriginalState({ firstname, lastname, email });
+    setIsEditing(true);
   };
 
   return (
@@ -94,6 +114,7 @@ const ProfileScreen = ({ navigation }) => {
             value={firstname}
             onChangeText={setFirstname}
             placeholder="First Name"
+            editable={isEditing}
           />
         </Input>
 
@@ -103,6 +124,7 @@ const ProfileScreen = ({ navigation }) => {
             value={lastname}
             onChangeText={setLastname}
             placeholder="Last Name"
+            editable={isEditing}
           />
         </Input>
         <Input style={ProfileStyles.textViewUser}>
@@ -111,27 +133,49 @@ const ProfileScreen = ({ navigation }) => {
             value={email}
             onChangeText={setEmail}
             placeholder="Email"
+            editable={isEditing}
           />
         </Input>
         <Input isDisabled={true} style={ProfileStyles.textViewUser}>
           <InputField
             style={ProfileStyles.fontSize20}
             value={role}
-            onChangeText={setRole}
             placeholder="Role"
           />
         </Input>
       </View>
-      <Button
-        size="lg"
-        variant="solid"
-        action="positive"
-        style={ProfileStyles.btnLogout}
-      >
-        <TouchableOpacity onPress={handleSave}>
-          <ButtonText style={ProfileStyles.btnSaveText}>Save</ButtonText>
-        </TouchableOpacity>
-      </Button>
+      {isEditing ? (
+        <>
+          <Button
+            size="lg"
+            variant="solid"
+            action="positive"
+            style={ProfileStyles.btnSave}
+          >
+            <TouchableOpacity onPress={handleSave}>
+              <ButtonText style={ProfileStyles.btnSaveText}>Save</ButtonText>
+            </TouchableOpacity>
+          </Button>
+          <Button size="lg" variant="outline" style={ProfileStyles.btnCancle}>
+            <TouchableOpacity onPress={handleCancel}>
+              <ButtonText style={ProfileStyles.btnCancleText}>
+                Cancel
+              </ButtonText>
+            </TouchableOpacity>
+          </Button>
+        </>
+      ) : (
+        <Button
+          size="lg"
+          variant="solid"
+          action="neutral"
+          style={ProfileStyles.btnEdit}
+        >
+          <TouchableOpacity onPress={handleEdit}>
+            <ButtonText style={ProfileStyles.btnEditText}>Edit</ButtonText>
+          </TouchableOpacity>
+        </Button>
+      )}
       <Button
         size="lg"
         variant="solid"
