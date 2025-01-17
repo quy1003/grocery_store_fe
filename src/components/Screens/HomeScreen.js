@@ -27,6 +27,7 @@ const HomeScreen = () => {
   const [searchResultProduct, setSearchResultProduct] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const navigation = useNavigation();
   const { loading, error, data } = useQuery(GET_CATEGORIES);
 
@@ -191,13 +192,28 @@ const HomeScreen = () => {
         </TouchableOpacity>
         <Text style={styles.textOffer}>Todays Offers</Text>
         <View style={styles.offerContainer}>
-          <OfferCard />
-          <OfferCard />
-          <OfferCard />
-          <OfferCard />
-          <OfferCard />
-          <OfferCard />
+          {allProducts.slice(0, currentPage * 9).map((product) => (
+            <OfferCard
+              key={product.id}
+              imgUrl={product.image.url}
+              name={product.name}
+              price={product.price_range.minimum_price.final_price}
+              sku={product.sku}
+            />
+          ))}
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            if (currentPage < allProducts.length / 9) {
+              console.log("current page", currentPage);
+              setCurrentPage(currentPage + 1);
+            }
+          }}
+          style={styles.allBtn}
+          title="See More Products"
+        >
+          <Text style={styles.textBtn}>See More Products</Text>
+        </TouchableOpacity>
       </View>
     </BaseScreen>
   );

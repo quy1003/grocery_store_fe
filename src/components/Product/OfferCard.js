@@ -1,18 +1,28 @@
 import { Card } from "@/components/ui/card";
-import { Image, StyleSheet, Text } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { IMAGE_URL_DOMAIN, BASE_IMAGE_URL } from "@env";
+import { useNavigation } from "@react-navigation/native";
 
-export default function OfferCard({ imgUrl, name, price, unit, quantity }) {
+export default function OfferCard({ imgUrl, name, price, sku = "" }) {
+  const navigate = useNavigation();
+  const handlePress = () => {
+    if (sku != "") navigate.navigate("ProductDetails", { sku });
+  };
   return (
-    <Card style={styles.container}>
-      <Image
-        source={{
-          uri: "https://www.simplyrecipes.com/thmb/GdViexTWEeLHvTGec7SkI3uKxAA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Red-Yellow-Onion-OPTION-1-060f128af9eb4c30a82d73f22fc2b67c.jpg",
-        }}
-        alt="image"
-        style={styles.img}
-      />
-      <Text style={styles.text}>2kg Onion just $100</Text>
-    </Card>
+    <TouchableOpacity onPress={handlePress}>
+      <Card style={styles.container}>
+        <Image
+          source={{
+            uri: imgUrl?.toString().replace(BASE_IMAGE_URL, IMAGE_URL_DOMAIN),
+          }}
+          alt="image"
+          style={styles.img}
+        />
+        <Text style={styles.text}>
+          {name} just {price?.value} {price?.currency}
+        </Text>
+      </Card>
+    </TouchableOpacity>
   );
 }
 

@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   inputLogin: {
-    backgroundColor: "#98FB98",
+    backgroundColor: "#b9e999",
     marginBottom: 20,
     padding: 8,
     borderRadius: 25,
@@ -30,7 +30,7 @@ export default StyleSheet.create({
   btnSubLogin: {
     marginBottom: 40,
     borderRadius: 35,
-    backgroundColor: "#98FB98",
+    backgroundColor: "#b9e999",
     width: "100%",
   },
   mutualView: { flex: 1, alignItems: "center", marginTop: 30 },
