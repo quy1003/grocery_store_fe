@@ -9,12 +9,13 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
 import BaseScreen from "@/src/components/BaseScreen";
 import ProfileStyles from "@/src/styles/ProfileStyles";
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Alert, TouchableOpacity, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { gql, useMutation } from "@apollo/client";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { set } from "local-storage";
 
 const UPDATE_CUSTOMER = gql`
   mutation UpdateCustomer(
@@ -42,6 +43,8 @@ const ProfileScreen = ({ navigation }) => {
   const [role, setRole] = useState(user ? user._j.__typename : "NaN");
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isUserNameEditing, setIsUserNameEditing] = useState(false);
+  const [isEmailEditing, setIsEmailEditing] = useState(false);
   const [originalState, setOriginalState] = useState({
     firstname,
     lastname,
@@ -49,7 +52,8 @@ const ProfileScreen = ({ navigation }) => {
   });
 
   const [updateCustomer] = useMutation(UPDATE_CUSTOMER);
-
+  const emailInputRef = useRef(null);
+  const userNameInputRef = useRef(null);
   const handleLogout = async () => {
     try {
       dispatch({ type: "LOGOUT" });
@@ -109,38 +113,110 @@ const ProfileScreen = ({ navigation }) => {
       </Avatar>
       <View style={ProfileStyles.infoView}>
         <Input style={ProfileStyles.textViewUser}>
+          <InputField style={ProfileStyles.fontSize20} disabled={true} />
+        </Input>
+        <Input style={ProfileStyles.textViewUser}>
           <InputField
-            style={ProfileStyles.fontSize20}
+            ref={userNameInputRef}
+            style={[
+              ProfileStyles.fontSize20,
+              {
+                width: "40%",
+                backgroundColor: isUserNameEditing ? "lightgray" : "#EEEEEE",
+              },
+            ]}
             value={firstname}
             onChangeText={setFirstname}
             placeholder="First Name"
-            editable={isEditing}
+            editable={isUserNameEditing}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              setIsUserNameEditing(true);
+              setIsEmailEditing(false);
+              setTimeout(() => {
+                userNameInputRef.current.focus();
+              }, 100);
+            }}
+            style={{
+              backgroundColor: "lightgray",
+              padding: 10,
+              borderRadius: 10,
+            }}
+          >
+            <Ionicons
+              style={{ marginTop: 3 }}
+              name={"settings-outline"}
+              size={30}
+            />
+          </TouchableOpacity>
+          <InputField
+            style={[
+              ProfileStyles.fontSize20,
+              {
+                width: "40%",
+                backgroundColor: isUserNameEditing ? "lightgray" : "#EEEEEE",
+              },
+            ]}
+            value={lastname}
+            onChangeText={setLastname}
+            placeholder="Last Name"
+            editable={isUserNameEditing}
+          />
+          <Ionicons
+            style={{ position: "absolute", top: "30%", left: "5%" }}
+            name={"person-circle"}
+            size={30}
           />
         </Input>
 
         <Input style={ProfileStyles.textViewUser}>
           <InputField
-            style={ProfileStyles.fontSize20}
-            value={lastname}
-            onChangeText={setLastname}
-            placeholder="Last Name"
-            editable={isEditing}
-          />
-        </Input>
-        <Input style={ProfileStyles.textViewUser}>
-          <InputField
-            style={ProfileStyles.fontSize20}
+            ref={emailInputRef}
+            style={[
+              ProfileStyles.fontSize20,
+              { backgroundColor: isEmailEditing ? "lightgray" : "#EEEEEE" },
+            ]}
             value={email}
             onChangeText={setEmail}
             placeholder="Email"
-            editable={isEditing}
+            editable={isEmailEditing}
           />
+          <Ionicons
+            style={{ position: "absolute", top: "30%", left: "5%" }}
+            name={"mail"}
+            size={30}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              setIsEmailEditing(true);
+              setIsUserNameEditing(false);
+              setTimeout(() => {
+                emailInputRef.current.focus();
+              }, 100);
+            }}
+            style={{
+              position: "absolute",
+              top: "10%",
+              right: "2%",
+              backgroundColor: "lightgray",
+              borderRadius: 10,
+              padding: 13,
+            }}
+          >
+            <Ionicons name={"settings-outline"} size={30} />
+          </TouchableOpacity>
         </Input>
         <Input isDisabled={true} style={ProfileStyles.textViewUser}>
           <InputField
             style={ProfileStyles.fontSize20}
             value={role}
             placeholder="Role"
+          />
+          <Ionicons
+            style={{ position: "absolute", top: "30%", left: "5%" }}
+            name={"finger-print"}
+            size={30}
           />
         </Input>
       </View>
