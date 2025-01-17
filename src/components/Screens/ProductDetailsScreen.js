@@ -110,15 +110,41 @@ export default function ProductDetailsScreen({ route, navigation }) {
   const getOrCreateCart = async () => {
     try {
       const cartId = await AsyncStorage.getItem("@shopping_cart_id");
+      const lastCustomerId = await AsyncStorage.getItem("@last_customer_id");
+      const currentCustomerId = wishlistData?.customer?.id;
+
+      if (currentCustomerId && lastCustomerId !== currentCustomerId) {
+        await AsyncStorage.removeItem("@shopping_cart_id");
+        await AsyncStorage.setItem("@last_customer_id", currentCustomerId);
+        const { data } = await createCart();
+        const newCartId = data.createEmptyCart;
+        await AsyncStorage.setItem("@shopping_cart_id", newCartId);
+        return newCartId;
+      }
 
       if (cartId) {
-        return cartId;
+        try {
+          const { data: addToCartData } = await addToCart({
+            variables: {
+              cartId,
+              sku: "test-sku",
+              quantity: 0,
+            },
+          });
+          return cartId;
+        } catch (error) {
+          await AsyncStorage.removeItem("@shopping_cart_id");
+        }
       }
 
       const { data } = await createCart();
       const newCartId = data.createEmptyCart;
-
       await AsyncStorage.setItem("@shopping_cart_id", newCartId);
+
+      if (currentCustomerId) {
+        await AsyncStorage.setItem("@last_customer_id", currentCustomerId);
+      }
+
       return newCartId;
     } catch (error) {
       console.error("Error in getOrCreateCart:", error);
@@ -159,12 +185,38 @@ export default function ProductDetailsScreen({ route, navigation }) {
       }
     } catch (error) {
       console.error("Error in handleAddToCart:", error);
-      Alert.alert("Error", "Failed to add product to cart. Please try again.");
+
+      if (error.message.includes("cannot perform operations on cart")) {
+        await AsyncStorage.removeItem("@shopping_cart_id");
+        await AsyncStorage.removeItem("@last_customer_id");
+        Alert.alert(
+          "Cart Error",
+          "Your shopping session has expired. Please try again.",
+          [
+            {
+              text: "Retry",
+              onPress: () => handleAddToCart(),
+            },
+          ],
+        );
+      } else {
+        Alert.alert(
+          "Error",
+          "Failed to add product to cart. Please try again.",
+        );
+      }
     } finally {
       setIsLoading(false);
     }
   };
-
+  useEffect(() => {
+    return () => {
+      if (error?.message.includes("cannot perform operations on cart")) {
+        AsyncStorage.removeItem("@shopping_cart_id");
+        AsyncStorage.removeItem("@last_customer_id");
+      }
+    };
+  }, [error]);
   const star = 4.2;
   const renderStar = (value) => {
     LogBox.ignoreLogs([
