@@ -23,6 +23,7 @@ import {
 import { useQuery, useMutation } from "@apollo/client";
 import CartStyles from "@/src/styles/CartStyles";
 import { IMAGE_URL_DOMAIN, BASE_IMAGE_URL } from "@env";
+import { useFocusEffect } from "@react-navigation/native";
 
 const CART_CACHE_KEY = "cart_data_cache";
 const CART_CACHE_TIMESTAMP = "cart_cache_timestamp";
@@ -53,18 +54,34 @@ const EmptyCart = ({ onShopNow }) => {
 const CartScreen = ({ navigation }) => {
   const [localCart, setLocalCart] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const { loading, error, data, startPolling, stopPolling, refetch } = useQuery(
-    GET_CUSTOMER_CART,
-    {
-      fetchPolicy: "network-only",
-      nextFetchPolicy: "cache-and-network",
-      notifyOnNetworkStatusChange: true,
-      onError: (error) => {
-        console.error("Cart query error:", error.type);
-      },
-    },
-  );
+  // const { loading, error, data, startPolling, stopPolling, refetch } = useQuery(
+  //   GET_CUSTOMER_CART,
+  //   {
+  //     fetchPolicy: "network-only",
+  //     nextFetchPolicy: "cache-and-network",
+  //     notifyOnNetworkStatusChange: true,
+  //     onError: (error) => {
+  //       console.error("Cart query error:", error);
+  //     },
+  //   },
+  // );
+
+  // const { loading, error, data, refetch } = useQuery(GET_CUSTOMER_CART, {
+  //   fetchPolicy: "network-only",
+  //   nextFetchPolicy: "cache-and-network",
+  //   notifyOnNetworkStatusChange: true,
+  //   onError: (error) => {
+  //     console.error("Cart query error:", error);
+  //   },
+  // });
+  const { loading, error, data, refetch } = useQuery(GET_CUSTOMER_CART, {
+    fetchPolicy: "network-only",
+    nextFetchPolicy: "cache-and-network",
+    notifyOnNetworkStatusChange: true,
+    onError: handleCartError,
+  });
 
   const [updateQuantity] = useMutation(UPDATE_CART_ITEM_QUANTITY);
   const [removeItem] = useMutation(REMOVE_ITEM_FROM_CART);
@@ -78,24 +95,45 @@ const CartScreen = ({ navigation }) => {
     }, 0);
   };
 
-  const loadCachedCart = async () => {
+  const clearCartData = async () => {
     try {
-      const cachedTimestamp = await AsyncStorage.getItem(CART_CACHE_TIMESTAMP);
-      if (cachedTimestamp) {
-        const timestamp = parseInt(cachedTimestamp);
-        const now = Date.now();
-
-        if (now - timestamp < CACHE_DURATION) {
-          const cachedCart = await AsyncStorage.getItem(CART_CACHE_KEY);
-          if (cachedCart) {
-            const parsedCart = JSON.parse(cachedCart);
-            setLocalCart(parsedCart);
-            setTotalAmount(calculateTotal(parsedCart?.customerCart?.items));
-          }
-        }
-      }
+      await AsyncStorage.removeItem(CART_CACHE_KEY);
+      await AsyncStorage.removeItem(CART_CACHE_TIMESTAMP);
+      await AsyncStorage.removeItem("@shopping_cart_id");
+      setLocalCart(null);
+      setTotalAmount(0);
     } catch (error) {
-      console.error("Error loading cached cart:", error);
+      console.error("Error clearing cart data:", error);
+    }
+  };
+
+  const handleCartError = async (error) => {
+    console.error("Cart error:", error);
+    if (
+      error.message.includes(
+        "The current user cannot perform operations on cart",
+      ) ||
+      error.message.includes("Could not find a cart") ||
+      error.message.includes("The cart isn't active")
+    ) {
+      await clearCartData();
+
+      Alert.alert(
+        "Session Expired",
+        "Your shopping session has expired. Please try again.",
+        [
+          {
+            text: "OK",
+            onPress: async () => {
+              try {
+                await refetch();
+              } catch (refetchError) {
+                console.error("Refetch error:", refetchError);
+              }
+            },
+          },
+        ],
+      );
     }
   };
 
@@ -111,29 +149,34 @@ const CartScreen = ({ navigation }) => {
   const handleShopNow = () => {
     navigation.navigate("Home");
   };
+  useFocusEffect(
+    React.useCallback(() => {
+      const refreshCart = async () => {
+        setIsRefreshing(true);
+        try {
+          const cartId = await AsyncStorage.getItem("@shopping_cart_id");
+          if (!cartId) {
+            await clearCartData();
+            setIsRefreshing(false);
+            return;
+          }
 
-  useEffect(() => {
-    const initializeCart = async () => {
-      await loadCachedCart();
-      try {
-        const result = await refetch();
-        if (result.data) {
-          await updateCartCache(result.data);
-          setLocalCart(result.data);
-          setTotalAmount(calculateTotal(result.data?.customerCart?.items));
+          const result = await refetch();
+          if (result.data) {
+            await updateCartCache(result.data);
+            setLocalCart(result.data);
+            setTotalAmount(calculateTotal(result.data?.customerCart?.items));
+          }
+        } catch (err) {
+          await handleCartError(err);
+        } finally {
+          setIsRefreshing(false);
         }
-      } catch (err) {
-        console.error("Refetch error:", err);
-      }
-    };
+      };
 
-    initializeCart();
-    startPolling(30000);
-
-    return () => {
-      stopPolling();
-    };
-  }, []);
+      refreshCart();
+    }, []),
+  );
 
   const handleQuantityChange = async (itemId, quantity) => {
     if (quantity === 0) {
@@ -143,6 +186,10 @@ const CartScreen = ({ navigation }) => {
 
     try {
       const currentCart = localCart || data;
+      if (!currentCart?.customerCart?.id) {
+        throw new Error("No active cart found");
+      }
+
       const updatedItems = currentCart.customerCart.items.map((item) =>
         item.id === itemId ? { ...item, quantity } : item,
       );
@@ -169,14 +216,17 @@ const CartScreen = ({ navigation }) => {
         },
       });
     } catch (error) {
-      console.error("Error updating quantity:", error);
-      setLocalCart(data);
+      await handleCartError(error);
     }
   };
 
   const handleRemoveItem = async (itemId) => {
     try {
       const currentCart = localCart || data;
+      if (!currentCart?.customerCart?.id) {
+        throw new Error("No active cart found");
+      }
+
       const updatedItems = currentCart.customerCart.items.filter(
         (item) => item.id !== itemId,
       );
@@ -202,8 +252,7 @@ const CartScreen = ({ navigation }) => {
         },
       });
     } catch (error) {
-      console.error("Error removing item:", error);
-      setLocalCart(data);
+      await handleCartError(error);
     }
   };
 
@@ -306,7 +355,7 @@ const CartScreen = ({ navigation }) => {
   const cartData = localCart || data;
   const cartItems = cartData?.customerCart?.items || [];
 
-  if (loading && !cartData) {
+  if ((loading || isRefreshing) && !localCart) {
     return (
       <SafeAreaView style={CartStyles.container}>
         <View style={CartStyles.loadingContainer}>
