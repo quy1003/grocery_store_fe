@@ -258,8 +258,13 @@ const CartScreen = ({ navigation }) => {
 
   const renderRightActions = (progress, dragX, itemId) => {
     const trans = dragX.interpolate({
-      inputRange: [-100, 0],
-      outputRange: [0, 100],
+      inputRange: [-80, 0],
+      outputRange: [0, 80],
+      extrapolate: "clamp",
+    });
+    const opacity = progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0.7, 1],
     });
 
     return (
@@ -271,6 +276,7 @@ const CartScreen = ({ navigation }) => {
           style={[
             CartStyles.deleteButtonContainer,
             {
+              opacity,
               transform: [{ translateX: trans }],
             },
           ]}
@@ -320,7 +326,7 @@ const CartScreen = ({ navigation }) => {
         renderRightActions={(progress, dragX) =>
           renderRightActions(progress, dragX, item.id)
         }
-        rightThreshold={-100}
+        rightThreshold={-80}
         overshootRight={false}
       >
         <View style={CartStyles.itemCard}>
