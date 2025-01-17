@@ -20,6 +20,7 @@ const CategoryScreen = ({ route, navigation }) => {
   });
   const [products, setProducts] = useState([]);
   const [categoryName, setCategoryName] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (data) {
@@ -51,42 +52,9 @@ const CategoryScreen = ({ route, navigation }) => {
 
   return (
     <BaseScreen title={categoryName}>
-      {/* <FlatList
-        data={products}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContainer}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => handlePress(item.sku)}
-          >
-            <Image
-              source={{
-                uri: "https://cdn.tgdd.vn/Products/Images/8788/223036/bhx/quyt-mini-tui-500g-202201211139151317.jpg",
-              }}
-              style={styles.productImage}
-              resizeMode="cover"
-            />
-            <View style={styles.productInfo}>
-              <Text style={styles.productName}>{item.name}</Text>
-              <View style={styles.priceContainer}>
-                <Text style={styles.finalPrice}>
-                  ${item.price_range.minimum_price.final_price.value.toFixed(2)}
-                </Text>
-                <Text style={styles.regularPrice}>
-                  $
-                  {item.price_range.minimum_price.regular_price.value.toFixed(
-                    2
-                  )}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
-      /> */}
       <View style={styles.listContainer}>
         {products &&
-          products.map((item) => (
+          products.slice(0, currentPage * 6).map((item) => (
             <TouchableOpacity
               style={styles.card}
               onPress={() => handlePress(item.sku)}
@@ -105,29 +73,53 @@ const CategoryScreen = ({ route, navigation }) => {
               />
               <View style={styles.productInfo}>
                 <Text style={styles.productName}>{item.name}</Text>
-                <View style={styles.priceContainer}>
-                  <Text style={styles.finalPrice}>
-                    $
-                    {item.price_range.minimum_price.final_price.value.toFixed(
-                      2,
-                    )}
-                  </Text>
-                  {/* <Text style={styles.regularPrice}>
-                    $
-                    {item.price_range.minimum_price.regular_price.value.toFixed(
-                      2
-                    )}
-                  </Text> */}
-                </View>
+                <Text style={styles.finalPrice}>
+                  ${item.price_range.minimum_price.final_price.value.toFixed(2)}
+                </Text>
+                {/* <View style={styles.priceContainer}></View> */}
               </View>
             </TouchableOpacity>
           ))}
+      </View>
+      <View style={styles.btnContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            if (currentPage < products.length / 9) {
+              console.log("current page", currentPage);
+              setCurrentPage(currentPage + 1);
+            }
+          }}
+          style={styles.allBtn}
+          title="See More Products"
+        >
+          <Text style={styles.textBtn}>See More Products</Text>
+        </TouchableOpacity>
       </View>
     </BaseScreen>
   );
 };
 
 const styles = StyleSheet.create({
+  allBtn: {
+    padding: 8,
+    borderColor: "#333",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderRadius: 40,
+    width: 180,
+    marginVertical: 16,
+  },
+  textBtn: {
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  btnContainer: {
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "row",
+    width: "100%",
+  },
   listContainer: {
     padding: 16,
     display: "flex",
@@ -155,7 +147,9 @@ const styles = StyleSheet.create({
   },
   productInfo: {
     padding: 16,
-    // display: "flex",
+    display: "flex",
+    justifyContent: "space-between",
+    flex: 1,
   },
   productName: {
     fontSize: 16,
@@ -174,6 +168,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#2e7d32",
+    alignSelf: "flex-end",
   },
   regularPrice: {
     fontSize: 14,
