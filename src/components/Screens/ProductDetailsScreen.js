@@ -23,6 +23,8 @@ import {
   ADD_TO_WISHLIST,
 } from "@/src/Query/favorite";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomModal from "@/src/mutuals/CustomModal";
+import CustomNotification from "@/src/mutuals/CustomNotification";
 
 export default function ProductDetailsScreen({ route, navigation }) {
   const { sku } = route.params;
@@ -49,7 +51,8 @@ export default function ProductDetailsScreen({ route, navigation }) {
   const [addToCart] = useMutation(ADD_PRODUCT_TO_CART);
   const [addToWishlist] = useMutation(ADD_TO_WISHLIST);
   const [removeFromWishlist] = useMutation(REMOVE_FROM_WISHLIST);
-
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [message, setMessage] = useState("");
   useEffect(() => {
     if (data) {
       setProduct(data.products.items[0]);
@@ -84,7 +87,8 @@ export default function ProductDetailsScreen({ route, navigation }) {
         });
         setIsFavorite(false);
         setWishlistItemId(null);
-        Alert.alert("Success", "Product removed from wishlist");
+        setMessage("Product has removed from wishlist");
+        setModalVisible(true);
       } else {
         const { data } = await addToWishlist({
           variables: { sku },
@@ -97,7 +101,8 @@ export default function ProductDetailsScreen({ route, navigation }) {
           if (newItem) {
             setWishlistItemId(newItem.id);
           }
-          Alert.alert("Success", "Product added to wishlist");
+          setMessage("Product has added to wishlist");
+          setModalVisible(true);
         }
       }
       refetchWishlist();
@@ -110,15 +115,41 @@ export default function ProductDetailsScreen({ route, navigation }) {
   const getOrCreateCart = async () => {
     try {
       const cartId = await AsyncStorage.getItem("@shopping_cart_id");
+      const lastCustomerId = await AsyncStorage.getItem("@last_customer_id");
+      const currentCustomerId = wishlistData?.customer?.id;
+
+      if (currentCustomerId && lastCustomerId !== currentCustomerId) {
+        await AsyncStorage.removeItem("@shopping_cart_id");
+        await AsyncStorage.setItem("@last_customer_id", currentCustomerId);
+        const { data } = await createCart();
+        const newCartId = data.createEmptyCart;
+        await AsyncStorage.setItem("@shopping_cart_id", newCartId);
+        return newCartId;
+      }
 
       if (cartId) {
-        return cartId;
+        try {
+          const { data: addToCartData } = await addToCart({
+            variables: {
+              cartId,
+              sku: "test-sku",
+              quantity: 0,
+            },
+          });
+          return cartId;
+        } catch (error) {
+          await AsyncStorage.removeItem("@shopping_cart_id");
+        }
       }
 
       const { data } = await createCart();
       const newCartId = data.createEmptyCart;
-
       await AsyncStorage.setItem("@shopping_cart_id", newCartId);
+
+      if (currentCustomerId) {
+        await AsyncStorage.setItem("@last_customer_id", currentCustomerId);
+      }
+
       return newCartId;
     } catch (error) {
       console.error("Error in getOrCreateCart:", error);
@@ -145,26 +176,43 @@ export default function ProductDetailsScreen({ route, navigation }) {
       });
 
       if (addToCartData?.addSimpleProductsToCart?.cart) {
-        Alert.alert("Success", "Product added to cart successfully", [
-          {
-            text: "Continue Shopping",
-            onPress: () => navigation.goBack(),
-            style: "cancel",
-          },
-          {
-            text: "Go to Cart",
-            onPress: () => navigation.navigate("MyTabs", { screen: "Cart" }),
-          },
-        ]);
+        setMessage("Your product has been added to the cart");
+        setModalVisible(true);
       }
     } catch (error) {
       console.error("Error in handleAddToCart:", error);
-      Alert.alert("Error", "Failed to add product to cart. Please try again.");
+
+      if (error.message.includes("cannot perform operations on cart")) {
+        await AsyncStorage.removeItem("@shopping_cart_id");
+        await AsyncStorage.removeItem("@last_customer_id");
+        Alert.alert(
+          "Cart Error",
+          "Your shopping session has expired. Please try again.",
+          [
+            {
+              text: "Retry",
+              onPress: () => handleAddToCart(),
+            },
+          ],
+        );
+      } else {
+        Alert.alert(
+          "Error",
+          "Failed to add product to cart. Please try again.",
+        );
+      }
     } finally {
       setIsLoading(false);
     }
   };
-
+  useEffect(() => {
+    return () => {
+      if (error?.message.includes("cannot perform operations on cart")) {
+        AsyncStorage.removeItem("@shopping_cart_id");
+        AsyncStorage.removeItem("@last_customer_id");
+      }
+    };
+  }, [error]);
   const star = 4.2;
   const renderStar = (value) => {
     LogBox.ignoreLogs([
@@ -346,6 +394,13 @@ export default function ProductDetailsScreen({ route, navigation }) {
               )}
             </TouchableOpacity>
           </View>
+          <CustomNotification
+            isVisible={isModalVisible}
+            title="Notification"
+            message={message}
+            onCancel={() => setModalVisible(false)}
+            // onConfirm={() => {}}
+          />
         </BaseScreen>
       )}
     </>

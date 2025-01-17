@@ -15,8 +15,19 @@ export default StyleSheet.create({
   textViewUser: {
     padding: 5,
     marginBottom: 1,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
-  fontSize20: { fontSize: 20 },
+  fontSize20: {
+    position: "relative",
+    fontSize: 20,
+    backgroundColor: "#EEEEEE",
+    borderRadius: 10,
+    padding: 15,
+    paddingLeft: 50,
+    width: "100%",
+  },
   btnLogout: {
     backgroundColor: "#E63535",
     width: 120,
