@@ -36,6 +36,7 @@ export default StyleSheet.create({
     padding: 15,
     marginBottom: 15,
     alignItems: "center",
+    height: 90,
   },
   itemImage: {
     width: 60,
@@ -137,10 +138,13 @@ export default StyleSheet.create({
     color: "#666",
   },
   deleteButton: {
-    width: 100,
+    width: 80,
+    height: 90,
     backgroundColor: "#FF3B30",
   },
   deleteButtonContainer: {
+    width: "100%",
+    height: "100%",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
