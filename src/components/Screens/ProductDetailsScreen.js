@@ -216,7 +216,6 @@ export default function ProductDetailsScreen({ route, navigation }) {
               ? "•   In stock"
               : "•   Out of stock"
           }
-          backScreenName={"MyTabs"}
           rightComponent={
             <TouchableOpacity
               onPress={toggleFavorite}

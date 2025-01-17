@@ -165,7 +165,7 @@ const FavoriteScreen = ({ navigation }) => {
         <TouchableOpacity
           style={FavoriteStyles.itemContainer}
           onPress={() =>
-            navigation.navigate("ProductDetail", { productId: product.id })
+            navigation.navigate("ProductDetails", { sku: product.sku })
           }
         >
           <Image
